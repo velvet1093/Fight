@@ -1,0 +1,11 @@
+<!doctype html><html><body style="margin:0;background:#222">
+<canvas id="c"></canvas>
+<script src="../js/pixel.js"></script><script src="../js/sprites.js"></script><script src="../js/backgrounds.js"></script>
+<script>
+const q=new URLSearchParams(location.search);
+const ids=(q.get('ids')||'home,cafe,school,park,beach,mall,arcade,shrine,dojo').split(',');
+const ts=(q.get('t')||'1').split(',').map(Number);const S=+(q.get('s')||2);
+const c=document.getElementById('c');c.width=3*192*S;c.height=Math.ceil(ids.length*ts.length/3)*144*S;
+const x=c.getContext('2d');x.imageSmoothingEnabled=false;let k=0;
+ids.forEach(id=>ts.forEach(t=>{x.drawImage(BACKGROUNDS.render(id,t),(k%3)*192*S,Math.floor(k/3)*144*S,192*S,144*S);k++;}));
+</script></body></html>

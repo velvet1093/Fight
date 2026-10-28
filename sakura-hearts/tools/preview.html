@@ -1,0 +1,12 @@
+<!doctype html><html><body style="margin:0;background:#3b3349">
+<canvas id="c"></canvas>
+<script src="../js/pixel.js"></script>
+<script src="../js/sprites.js"></script>
+<script>
+const ids=(new URLSearchParams(location.search).get('ids')||'nami,aqua,yumeko,kurumi,player').split(',');
+const ex=(new URLSearchParams(location.search).get('ex')||'neutral,happy,blush,sad').split(',');
+const S=+(new URLSearchParams(location.search).get('s')||5);
+const c=document.getElementById('c');c.width=ids.length*48*S;c.height=ex.length*64*S;
+const x=c.getContext('2d');x.imageSmoothingEnabled=false;
+ex.forEach((e,j)=>ids.forEach((id,i)=>x.drawImage(SPRITES.get(id,e,false,new URLSearchParams(location.search).get('o')||null,JSON.parse(new URLSearchParams(location.search).get('opts')||'null')),i*48*S,j*64*S,48*S,64*S)));
+</script></body></html>

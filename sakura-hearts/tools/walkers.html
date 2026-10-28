@@ -1,0 +1,9 @@
+<!doctype html><html><body style="margin:0;background:#7cc47a">
+<canvas id="c"></canvas>
+<script src="../js/pixel.js"></script><script src="../js/sprites.js"></script><script src="../js/walkers.js"></script>
+<script>
+const q=new URLSearchParams(location.search);const ids=(q.get('ids')||'player,nami,aqua,yumeko,kurumi,rem,zerotwo,frieren').split(','),dirs=['down','left','right','up'],S=6,O=q.get('o')||null;
+const c=document.getElementById('c');c.width=dirs.length*3*16*S;c.height=ids.length*24*S;
+const x=c.getContext('2d');x.imageSmoothingEnabled=false;
+ids.forEach((id,j)=>dirs.forEach((d,i)=>[0,1,2].forEach(f=>x.drawImage(WALKERS.get(id,d,f,O,JSON.parse(q.get('opts')||'null')),(i*3+f)*16*S,j*24*S,16*S,24*S))));
+</script></body></html>

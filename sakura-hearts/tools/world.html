@@ -1,0 +1,15 @@
+<!doctype html><html><body style="margin:0;background:#222">
+<canvas id="c"></canvas>
+<script src="../js/pixel.js"></script><script src="../js/walkers.js"></script><script src="../js/world.js"></script>
+<script>
+const S=+(new URLSearchParams(location.search).get('s')||2);
+const c=document.getElementById('c');c.width=WORLD.MW*16*S;c.height=WORLD.MH*16*S;
+const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.scale(S,S);
+const t0=performance.now();
+x.drawImage(WORLD.staticCanvas(),0,0);
+const d=WORLD.drawables();
+d.push({y:20*16+14,img:WALKERS.get('player','down',0),x:23*16,top:20*16-8});
+d.push({y:15*16+14,img:WALKERS.get('nami','left',1),x:13*16,top:18*16+14-22});
+d.sort((a,b)=>a.y-b.y).forEach(e=>x.drawImage(e.img,e.x,e.top));
+console.log('render ms',performance.now()-t0);
+</script></body></html>
