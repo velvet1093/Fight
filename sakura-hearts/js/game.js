@@ -996,11 +996,20 @@
 
     if (view.cg) {
       const f = view.cg;
-      const spr = MATURE.get(f.id, f.pose, f.expr, f.expr !== 'wink' && isBlinking(f.id, now));
       const t = Math.min(1, (now - f.since) / 220);
-      cx.globalAlpha = t;
-      cx.drawImage(spr, Math.round((BW - MATURE.W) / 2), Math.round((1 - t) * 6), MATURE.W, MATURE.H);
-      cx.globalAlpha = 1;
+      // the user's painted art when it's there, else the drawn MATURE art
+      if (!(window.VN_ART && VN_ART.draw(cx, f.id, { crop: 'knee', x: BW / 2, y: Math.round((1 - t) * 6) + 2, h: BH - 2, expr: f.pose === 'lift' ? 'love' : f.expr, t: now - f.since, alpha: t, react: portraitReaction(f.expr, now - (f.changed || f.since)) }))) {
+        const spr = MATURE.get(f.id, f.pose, f.expr, f.expr !== 'wink' && isBlinking(f.id, now));
+        cx.globalAlpha = t;
+        cx.drawImage(spr, Math.round((BW - MATURE.W) / 2), Math.round((1 - t) * 6), MATURE.W, MATURE.H);
+        cx.globalAlpha = 1;
+      }
+    } else if (view.focus && !girlOutfit(view.focus.id) && window.VN_ART && VN_ART.ready(view.focus.id)) {
+      const f = view.focus;
+      const t = Math.min(1, (now - f.since) / 220);
+      cx.fillStyle = 'rgba(20,10,30,.25)';
+      cx.fillRect(56, 140, 80, 3);
+      VN_ART.draw(cx, f.id, { crop: 'bust', x: BW / 2, y: 4 + Math.round((1 - t) * 6), h: BH - 4, expr: f.expr, t: now - f.since, alpha: t, react: portraitReaction(f.expr, now - f.reactedAt) });
     } else if (view.focus) {
       const f = view.focus;
       const spr = SPRITES.get(f.id, f.expr, isBlinking(f.id, now), S ? girlOutfit(f.id) : null, wopts(f.id));
@@ -3855,7 +3864,8 @@
   async function teaseScene(id, lines) {
     setFocus(null);
     for (const [pose, expr, text] of lines) {
-      view.cg = { id, pose, expr, since: view.cg ? view.cg.since : performance.now() };
+      const now = performance.now();
+      view.cg = { id, pose, expr, since: view.cg ? view.cg.since : now, changed: now };
       if (pose === 'lift') { SFX.heart(); spawnHearts(6); }
       await showLine(pose === 'lift' ? 'n' : id, text);
     }
