@@ -2,6 +2,7 @@
 
 - The user wants a **direct play link at the end of every interaction**.
 - Playable link (claude.ai Artifact): https://claude.ai/artifact/JF3AHasmgfN29ENbEDXZ1K
+- The live link currently runs `releases/sakura-hearts-expressions.html` (the user's "Expressions Update" build: AI-drawn portrait atlas `CAST_ATLAS`, nine expressions with blinking, and a tenth girl, Asuna). That build is not generated from `js/`, and `js/` does not have Asuna or the atlas yet, so publishing a fresh `build-artifact.js` output would drop them. Port those changes into `js/` first, or publish the release file.
 - After any game change: run `node tools/build-artifact.js <scratchpad>/sakura-hearts.html`, republish it
   to the artifact URL above (pass it as `url` from a new conversation), and end the reply with the link.
 - Publish the artifact with `capabilities: {db: {}, user: {}}` (omit on redeploys to keep them): save slots sync to `data/users/<id>/slot1..3`. Never change the save doc paths or the `{v, savedAt, state}` shape without a migration — players' progress lives there.
