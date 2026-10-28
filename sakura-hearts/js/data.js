@@ -2459,21 +2459,18 @@
   // Nami and Aqua only (adults in their own series): a consensual, implied
   // flirty tease she can offer or refuse once you're serious, and nights that
   // fade to black once you live together.
-  // Nami and Aqua's private flirty tease (girlfriends only, at home, when
-  // she's in the mood). Lines are [pose, expr, text] for the adult-proportioned
-  // MATURE art; the 'lift' line is shown as narration.
   const TEASE = {
     nami: {
       ask: "(You ask Nami, half-joking, for a little private show.)",
-      yes: [['hip', 'wink', "Oh? You want a peek, huh? ...Fine. Consider this a private showing. Free of charge... this once. 😏"], ['lift', 'wink', "Nami catches the hem of her sundress and lifts it for one cheeky second, just long enough to flash white cotton with a little orange bow."], ['stand', 'blush', "...Your face! Worth it. Don't get used to it."]],
+      yes: [['smug', "Oh? You want a peek, huh? ...Fine. Consider this a private showing. Free of charge... this once. 😏"], ['n', 'Nami tugs at the hem of her skirt with a wicked grin, the camera politely cuts to hearts, and when it comes back she is laughing at your red face.'], ['blush', "...Your face! Worth it. Don't get used to it."]],
       no: [['smug', "Not today, mister. A girl has to keep some mystery. And her prices high."], ['smile', "Ask me again some other time~"]],
-      self: [['hip', 'smug', "Hey. Look this way for a second..."], ['lift', 'wink', "With a teasing wink, Nami flips up the front of her skirt for a heartbeat, then smooths it back down like nothing happened."], ['stand', 'blush', "That was a free sample. Hehe~"]],
+      self: [['smug', "Hey. Look this way for a second..."], ['n', 'With a teasing wink, Nami does a cheeky little twirl, and the moment is hidden behind a burst of hearts.'], ['blush', "That was a free sample. Hehe~"]],
     },
     aqua: {
       ask: "(You ask Aqua, very politely, for a little divine blessing.)",
-      yes: [['hip', 'smug', "Behold, a blessing reserved for my most devoted believer!"], ['lift', 'blush', "Aqua strikes a dramatic goddess pose and lifts her pleated skirt, flashing pale blue panties with a tiny bow, very proud of herself for exactly one second."], ['stand', 'blush', "W-wait, why is my face so hot?! Goddesses don't get embarrassed! Stop looking at me like that!"]],
+      yes: [['smug', "Behold, a blessing reserved for my most devoted believer!"], ['n', 'Aqua strikes a dramatic goddess pose and flicks her skirt, and a curtain of sparkles and hearts hides everything from view.'], ['blush', "W-wait, why is my face so hot?! Goddesses don't get embarrassed! Stop looking at me like that!"]],
       no: [['sad', "Eh? N-no way! Not today! The goddess isn't in the mood!"], ['smile', "Maybe after you buy me a drink."]],
-      self: [['hip', 'wink', "My believer looks tired! Time for a special divine blessing!"], ['lift', 'wink', "Aqua gives a playful twirl and flicks up her skirt for a sparkly split second."], ['stand', 'blush', "...That was a blessing. Don't tell the other believers."]],
+      self: [['smug', "My believer looks tired! Time for a special divine blessing!"], ['n', 'Aqua gives a playful little twirl, and a cloud of sparkles conveniently covers everything.'], ['blush', "...That was a blessing. Don't tell the other believers."]],
     },
   };
   const NIGHT = {

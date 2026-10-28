@@ -53,7 +53,7 @@ favourite spots, and the routine changes on weekends.
 - **Wardrobe:** use the wardrobe at home (or 📱 Phone → ⚙️ → Wardrobe) to pick your coat colour, beachwear and towel, and each girl's one-piece or bikini, swimsuit colour, towel and pajamas (style, colour, nightcap).
 - **Animated scenes:** soaking together, swimming, sunbathing, fishing, training, hugs, hand-holding and more play out in the world with poses, emotes, steam, splashes and hearts.
 - **Overnight stays:** from 8pm to 1am, ask a Close Friend to spend the night at your place (she takes the bed, you get the sofa). Once she's your girlfriend you can also stay at hers, in her own bedroom, and you share the bed. You change into pajamas, talk on the rug, sleep, and get a morning scene. Each girl has her own sleepwear: tee and shorts (Nami, Aqua), red silk set (Yumeko), gothic nightgown (Kurumi), polka dots (Rem), oversized shirt (Zero Two), gown and nightcap (Frieren).
-- **Flirty tease (Nami and Aqua):** once Nami or Aqua is a serious girlfriend, ask her for a 😉 Flirty tease when you're alone together at your place or hers (no one else around). If she's in the mood she gives you a cheeky skirt flip, drawn in its own adult-proportioned art; she can also say no, and it's once a day.
+- **Flirty tease (Nami and Aqua):** once Nami or Aqua is a serious girlfriend, ask her for a 😉 Flirty tease when you're alone together at your place or hers. If she's in the mood, she does a cheeky twirl that's hidden behind hearts and sparkles; she can also say no, and it's once a day.
 - **Love potion:** Frieren sells 🧪 Love Potions (¥120). Give one to any girl for +20 ♥ that ignores the usual date limits.
 - **Weather:** sunny, cloudy, rain, thunderstorms (lightning and thunder) and sakura blizzards. Rain sends everyone indoors, a blizzard brings everyone to the park from 3 to 6pm, and the girls react to it. Check tomorrow's forecast on the TV.
 - **Run:** tap **RUN** next to the A button (or hold Shift) to run at nearly twice the speed. Girls walking with you keep up.
@@ -84,7 +84,6 @@ All pixel art is drawn in code (no image files).
 
 - `js/pixel.js`: tiny per-pixel raster (shapes, mirroring, auto-outline)
 - `js/sprites.js`: large chibi portraits (the four girls and the player) with expressions and blinking
-- `js/mature.js`: adult-proportioned knee-up art of Nami and Aqua (80×144) for their private tease scene
 - `js/walkers.js`: 16×24 overworld sprites, 4 directions × walk frames
 - `js/interiors.js`: the six walk-around building interiors (rooms, furniture, pathfinding)
 - `js/world.js`: the town map, buildings, props, trees, collision, A* pathfinding, minimap
@@ -103,5 +102,5 @@ Dev: `node tools/update.js <outdir>` checks running, per-girl lines, part colour
 `node tools/layout.js <outdir> 390 844 p` screenshots the fullscreen layout at a viewport size;
 `node tools/play.js <outdir> 300` walks around with a random bot and reports JS errors;
 `node tools/route.js <outdir> aqua 600` jumps one girl's route to the confession and ending;
-`node tools/tease.js <outdir>` checks Nami and Aqua's private tease (privacy gate, poses, screenshots);
+`node tools/tease.js <outdir>` checks Nami and Aqua's private tease (privacy gate and the scene);
 `node tools/build-artifact.js <out.html>` bundles everything into one page.

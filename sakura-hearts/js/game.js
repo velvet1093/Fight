@@ -638,7 +638,6 @@
     flash: 0,              // camera-flash overlay (purikura)
     girls: [],             // girls standing in a background scene
     focus: null,           // { id, expr, since }
-    cg: null,              // { id, pose, expr, since }: adult-proportioned MATURE art
     fx: [], petals: [], rain: 0,
   };
   const blinkAt = {};
@@ -955,7 +954,7 @@
       cx.setTransform(L.worldK, 0, 0, L.worldK, 0, 0);
       cx.imageSmoothingEnabled = false;
       drawWorld(now, dt);
-      if (view.focus || view.cg) { cx.setTransform(1, 0, 0, 1, 0, 0); cx.fillStyle = 'rgba(24,16,36,.6)'; cx.fillRect(0, 0, canvas.width, canvas.height); }
+      if (view.focus) { cx.setTransform(1, 0, 0, 1, 0, 0); cx.fillStyle = 'rgba(24,16,36,.6)'; cx.fillRect(0, 0, canvas.width, canvas.height); }
       sceneT();
     } else {
       cx.fillStyle = '#1a1424';
@@ -971,19 +970,10 @@
         cx.fillRect(Math.round(p.x) + 1, Math.round(p.y) + 1, 1, 1);
         return p.y < BH && outdoorBlossom;
       });
-      if (!view.focus && !view.cg) drawSceneGirls(now);
+      if (!view.focus) drawSceneGirls(now);
     }
 
-    if (view.cg) {
-      const f = view.cg;
-      const spr = MATURE.get(f.id, f.pose, f.expr, f.expr !== 'wink' && isBlinking(f.id, now));
-      const t = Math.min(1, (now - f.since) / 220);
-      cx.globalAlpha = t;
-      cx.fillStyle = 'rgba(20,10,30,.25)';
-      cx.fillRect(66, 141, 60, 3);
-      cx.drawImage(spr, 56, Math.round((1 - t) * 6), MATURE.W, MATURE.H);
-      cx.globalAlpha = 1;
-    } else if (view.focus) {
+    if (view.focus) {
       const f = view.focus;
       const spr = SPRITES.get(f.id, f.expr, isBlinking(f.id, now), S ? girlOutfit(f.id) : null, wopts(f.id));
       const t = Math.min(1, (now - f.since) / 220);
@@ -3728,7 +3718,6 @@
 
   // Nami and Aqua (adults in their own series): once you're serious, a
   // consensual flirty tease, only in private. You can ask; she can say no.
-  // The scene uses their adult-proportioned MATURE art, never the chibi sprites.
   function alone(id) {
     if (S.inside !== 'home' && S.inside !== 'room_' + id) return false;
     return GIRL_ORDER.every((k) => k === id || !girlNearPlayer(k));
@@ -3745,13 +3734,11 @@
     renderGirlMenu(id);
   }
   async function teaseScene(id, lines) {
-    setFocus(null);
-    for (const [pose, expr, text] of lines) {
-      view.cg = { id, pose, expr, since: view.cg ? view.cg.since : performance.now() };
-      if (pose === 'lift') { SFX.heart(); spawnHearts(6); }
-      await showLine(pose === 'lift' ? 'n' : id, text);
-    }
-    view.cg = null;
+    const g = actorPos(id);
+    await play(id, [lines[0]]);
+    await cutscene({ actors: { [id]: { pose: 'jump', dirEnd: 'down' } }, focus: { x: g.x, y: g.y - 10 }, dur: 1600, fx: [{ kind: 'hearts', x: g.x, y: g.y - 20, at: 0 }, { kind: 'sparkle', x: g.x, y: g.y - 14, at: 200 }, { kind: 'hearts', x: g.x, y: g.y - 12, at: 500 }], emotes: [{ who: 'player', kind: '!', at: 300, dur: 900 }, { who: id, kind: 'heart', at: 900 }] });
+    await play(id, lines.slice(1));
+    endCut();
     addAff(id, 3);
   }
 
@@ -4598,7 +4585,7 @@
   // Test hook for automated play-tests: open index.html?debug
   if (/[?&]debug\b/.test(location.search)) {
     window.__SH = {
-      get state() { return S; }, set state(v) { S = v; }, get mode() { return mode; }, get cut() { return view.cut; }, get cg() { return view.cg; },
+      get state() { return S; }, set state(v) { S = v; }, get mode() { return mode; }, get cut() { return view.cut; },
       screenPos() { const c = camera(); return [(snap(S.px) - c.x) * L.worldK, (snap(S.py) - c.y) * L.worldK, c.x * L.worldK, c.y * L.worldK]; },
       SAVE, slotRecord, loadSlot, autosave,
       npcs, initNPCs, resume, enterWorld, enterRoom, girlMenu, newState, advanceTime, startFollow, newDay, runActivity, openWardrobe, outfitFor, openShop, goalFor,
