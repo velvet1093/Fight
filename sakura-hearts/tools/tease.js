@@ -1,5 +1,5 @@
-// Nami and Aqua's private flirty tease: only offered somewhere private, and
-// the scene (chibi sprites, hidden behind hearts) plays through to the end.
+// Nami and Aqua's private flirty tease: only offered somewhere private, plays
+// with the adult-proportioned MATURE art, and screenshots each step.
 // Usage: node tools/tease.js <outdir>
 const { chromium } = require('playwright');
 const OUT = process.argv[2] || '.';
@@ -34,22 +34,23 @@ const OUT = process.argv[2] || '.';
   await openMenu('nami');
   console.log('home, both along:', JSON.stringify(await teaseBtn()));
 
-  // 3. alone at home with each of them: she says yes, the scene plays through
+  // 3. alone at home with each of them: she says yes, the scene plays with the adult art
   for (const id of ['nami', 'aqua']) {
     await setup({ gfs: [id], follow: [id], room: 'home' });
     await openMenu(id);
     console.log(id, 'home alone:', JSON.stringify(await teaseBtn()));
     await p.evaluate(() => { Math.__r = Math.random; Math.random = () => 0.1; });
     await p.evaluate(() => [...document.querySelectorAll('#menu .btn')].find((x) => x.textContent.includes('Flirty tease')).click());
-    let cut = false, lines = 0;
+    const seen = [];
     for (let i = 0; i < 40; i++) {
       await p.waitForTimeout(250);
-      if (await p.evaluate(() => !!__SH.cut)) cut = true;
-      if (await p.$('#next.show')) { lines++; await p.click('#dialog').catch(() => {}); continue; }
-      if (lines && (await p.$$('#menu .btn')).length) break;
+      const st = await p.evaluate(() => ({ cg: __SH.cg ? __SH.cg.pose + '/' + __SH.cg.expr : null, text: document.getElementById('text').textContent, next: !!document.querySelector('#next.show') }));
+      if (st.cg && st.next && !seen.includes(st.cg)) { seen.push(st.cg); await p.screenshot({ path: `${OUT}/tease-${id}-${seen.length}.png` }); }
+      if (!st.cg && seen.length && (await p.$$('#menu .btn')).length) break;
+      if (st.next) await p.click('#dialog').catch(() => {});
     }
     await p.evaluate(() => { Math.random = Math.__r; });
-    console.log(id, 'cutscene played:', cut, '| lines:', lines, '| back at menu, button:', JSON.stringify(await teaseBtn()));
+    console.log(id, 'poses shown:', seen.join(', '), '| back at menu, button:', JSON.stringify(await teaseBtn()));
   }
 
   console.log('errors:', errors.length ? errors.join('\n') : 'none');
