@@ -2,7 +2,7 @@
 // rendering, dialogue and UI.
 (function () {
   'use strict';
-  const { DAYS, STAGES, CAPS, LOCATIONS, ACTIVITIES, ITEMS, FORTUNES, GIRLS, GIRL_ORDER, WEATHER, RAIN_SHELTER, INTERACTIONS, WALK_LINES, SLEEPOVER, FOODS, CITY, PAIRS, HAREM, LIFE, LIFE_FX, COSPLAYS, POSES, VS, YUMEKO_CARDS, CHAT, VARIETY, ENDGAME, TEASE, NIGHT } = DATA;
+  const { DAYS, STAGES, CAPS, LOCATIONS, ACTIVITIES, ITEMS, FORTUNES, GIRLS, GIRL_ORDER, WEATHER, RAIN_SHELTER, INTERACTIONS, WALK_LINES, SLEEPOVER, FOODS, CITY, PAIRS, HAREM, LIFE, LIFE_FX, COSPLAYS, POSES, VS, YUMEKO_CARDS, CHAT, VARIETY, PRIVATE_FLIRT, ENDGAME, TEASE, NIGHT } = DATA;
   const LEGACY_SAVE_KEY = 'sakura-hearts-save-v2';
   const SLOT_COUNT = 3;
   const SETTINGS_KEY = 'sakura-hearts-settings';
@@ -637,7 +637,7 @@
     dark: 0,               // lights-out overlay in the world (0..1)
     flash: 0,              // camera-flash overlay (purikura)
     girls: [],             // girls standing in a background scene
-    focus: null,           // { id, expr, since }
+    focus: null,           // { id, expr, since, reactedAt }
     cg: null,              // { id, pose, expr, since }: adult-proportioned MATURE art
     fx: [], petals: [], rain: 0,
   };
@@ -695,6 +695,26 @@
     if (!blinkAt[id]) blinkAt[id] = now + 1000 + Math.random() * 3000;
     if (now > blinkAt[id] + 140) blinkAt[id] = now + 2000 + Math.random() * 3500;
     return now >= blinkAt[id];
+  }
+
+  // A brief response to a new facial expression, independent of the idle bob.
+  // Its offsets settle to zero, so dialogue never shifts the scene's anchor.
+  function portraitReaction(expr, elapsed) {
+    const still = { x: 0, y: 0, angle: 0, scale: 1 };
+    if (!Number.isFinite(elapsed) || elapsed < 0 || elapsed >= 680) return still;
+    const t = elapsed / 680;
+    const beat = Math.sin(Math.PI * t), sway = Math.sin(2 * Math.PI * t) * (1 - t);
+    switch (expr) {
+      case 'happy': return { ...still, y: -Math.round(beat * 3) };
+      case 'surprised': return { ...still, y: -Math.round(beat * 4), scale: 1 + beat * 0.018 };
+      case 'sad': return { ...still, y: Math.round(beat * 2) };
+      case 'blush': return { ...still, x: Math.round(sway * 2), angle: -beat * 0.018 };
+      case 'love': return { ...still, x: Math.round(sway * 1.5), angle: beat * 0.018 };
+      case 'smug': return { ...still, x: Math.round(beat), angle: -beat * 0.025 };
+      case 'calm': return { ...still, y: Math.round(beat) };
+      case 'smile': return { ...still, y: -Math.round(beat) };
+      default: return still;
+    }
   }
 
   function drawLabel(text, x, y, color) {
@@ -934,7 +954,7 @@
       cx.fillRect(x + 14, 127, 20, 2);
       cx.fillRect(x + 16, 129, 16, 1);
       const expr = S && S.girls[id].gf ? 'love' : 'smile';
-      cx.drawImage(SPRITES.get(id, expr, isBlinking(id, now)), x, 66 + bob);
+      cx.drawImage(SPRITES.get(id, expr, isBlinking(id, now)), x, 66 + bob, 48, 64);
       const known = !S || S.girls[id].met;
       drawLabel(known ? GIRLS[id].name.toLowerCase() : '???', x + 24, 133, known ? '#f0e8f8' : '#b9a9d0');
     });
@@ -986,10 +1006,16 @@
       const spr = SPRITES.get(f.id, f.expr, isBlinking(f.id, now), S ? girlOutfit(f.id) : null, wopts(f.id));
       const t = Math.min(1, (now - f.since) / 220);
       const bob = Math.floor(now / 700) % 2;
+      const reaction = portraitReaction(f.expr, now - f.reactedAt);
       cx.globalAlpha = t;
       cx.fillStyle = 'rgba(20,10,30,.25)';
       cx.fillRect(66, 140, 60, 3);
-      cx.drawImage(spr, 48, 16 + bob + Math.round((1 - t) * 6), 96, 128);
+      cx.save();
+      cx.translate(96 + reaction.x, 80 + bob + Math.round((1 - t) * 6) + reaction.y);
+      cx.rotate(reaction.angle);
+      cx.scale(reaction.scale, reaction.scale);
+      cx.drawImage(spr, -48, -64, 96, 128);
+      cx.restore();
       cx.globalAlpha = 1;
     }
 
@@ -1006,8 +1032,13 @@
 
   function setFocus(id, expr) {
     if (!id) { view.focus = null; return; }
-    if (view.focus && view.focus.id === id) view.focus.expr = expr || view.focus.expr;
-    else view.focus = { id, expr: expr || 'neutral', since: performance.now() };
+    const now = performance.now();
+    if (view.focus && view.focus.id === id) {
+      if (expr && expr !== view.focus.expr) {
+        view.focus.expr = expr;
+        view.focus.reactedAt = now;
+      }
+    } else view.focus = { id, expr: expr || 'neutral', since: now, reactedAt: now };
   }
 
   // ============================================================ cutscenes
@@ -1049,7 +1080,7 @@
       for (const [id, a] of Object.entries(c.actors)) {
         const p = actorPos(id);
         const start = a.start || [p.x, p.y];
-        actors[id] = { id, x: start[0], y: start[1], dir: a.dir || p.dir, pose: a.pose || null, path: (a.path || []).map((q) => q.slice()), poseEnd: a.poseEnd, dirEnd: a.dirEnd, speed: a.speed || CUT_WALK, dist: 0, blanket: a.blanket, outfit: a.outfit };
+        actors[id] = { id, x: start[0], y: start[1], dir: a.dir || p.dir, pose: a.pose || null, path: (a.path || []).map((q) => q.slice()), poseEnd: a.poseEnd, dirEnd: a.dirEnd, speed: a.speed || CUT_WALK, dist: 0, blanket: a.blanket, outfit: a.outfit, gesture: a.gesture };
       }
       view.cut = Object.assign({ dur: 2000, fx: [], emotes: [], popups: [] }, c, { actors, t0: performance.now(), arrived: null, resolve, parts: [] });
       mode = 'busy';
@@ -1115,7 +1146,11 @@
     if (!moving && a.pose === 'swing') fr = 1 + (Math.floor(now / 170) % 2);
     if (!moving && a.pose === 'run') fr = 1 + (Math.floor(now / 90) % 2);
     const of = a.outfit || outfitFor(a.id, S.inside, a.x, a.y);
-    const img = WALKERS.get(a.id, a.dir, fr, of, wopts(a.id));
+    const elapsed = now - (view.cut.arrived === null ? view.cut.t0 : view.cut.arrived);
+    const phase = (Math.sin(elapsed / 360 - Math.PI / 2) + 1) / 2;
+    const img = !moving && a.pose === 'flirt'
+      ? WALKERS.flirt(a.id, a.dir, fr, a.gesture, phase, of, wopts(a.id))
+      : WALKERS.get(a.id, a.dir, fr, of, wopts(a.id));
     const x = snap(a.x) - 8 - cam.x, y = snap(a.y) - 23 - cam.y;
     const pose = moving ? null : a.pose;
     if (pose === 'sleep') {
@@ -1153,6 +1188,8 @@
     }
     let lift = 0;
     if (pose === 'jump') lift = Math.abs(Math.round(Math.sin(now / 150) * 3));
+    if (pose === 'flirt' && a.gesture === 'bounce') lift = Math.round(phase * 3);
+    if (pose === 'flirt' && a.gesture === 'curtsy') lift = -Math.round(phase);
     cx.drawImage(img, x, y - lift);
     if (pose === 'swing') {
       const up = fr === 1;
@@ -2508,6 +2545,7 @@
 
   // ======================================================== girl interaction
   const GREET = {
+    asuna: ['{name}! Ready for another round, or shall we take a break?', 'There you are, {name}. I saved you a seat.', 'Good timing! I was just packing a picnic. Want to join me?'],
     nami: ['Hey hey, {name}! Here to spend money?', "Oh! {name}! Perfect timing, I'm on break.", "Yo! What's up?"],
     aqua: ['Ah, my loyal worshipper approaches!', 'Mortal! You may speak.', '{name}! Did you bring soda? ...No? Okay.'],
     yumeko: ["Ufufu, I knew you'd come.", 'Good timing, {name}. I was getting bored.', 'Oh? Feeling lucky today?'],
@@ -2519,6 +2557,7 @@
     krul: ['Ah. The human.', 'You again? ...Good.', 'Speak, {name}. The queen is listening.'],
   };
   const GF_GREET = {
+    asuna: ['{name}! My favourite teammate. Come here. ♥', 'I can handle a duel, but that smile still catches me off guard. ♥'],
     nami: ['{name}! My favorite person! ♥'],
     aqua: ['My beloved has arrived! ♥'],
     yumeko: ["There's my darling~ ♥"],
@@ -2606,6 +2645,10 @@
     else if (S.energy < 25) { dateNote = 'Too tired'; dateOk = false; }
     const acted = S.daily['act_' + id];
     m.appendChild(button({ icon: '✨', label: 'Interact…', note: acted ? 'Done today' : 'compliment, joke, hug…', disabled: !!acted, onClick: () => interactMenu(id) }));
+    if (PRIVATE_FLIRT[id]) {
+      const flirt = privateFlirtAvailability(id);
+      m.appendChild(button({ icon: '♥', label: 'Private flirt', note: flirt.note, disabled: !flirt.ok, onClick: () => privateFlirt(id) }));
+    }
     const grp = party();
     const joining = grp.length > 0 && !npcs[id].follow;
     let walkNote = joining ? `Join ${namesOf(grp)} (${grp.length + 1}/${MAX_PARTY})` : 'Stroll around town · 2h';
@@ -2658,6 +2701,73 @@
       m.appendChild(button({ icon: '💌', label: 'Confess your feelings', cls: 'primary', onClick: () => confess(id) }));
     }
     m.appendChild(button({ icon: '↩', label: 'Goodbye', onClick: resume }));
+  }
+
+  // A quiet, fully clothed endgame moment. Eligibility is checked here as well
+  // as in the menu so a stale button cannot bypass relationship or privacy.
+  function privateFlirtAvailability(id) {
+    if (!S || !PRIVATE_FLIRT[id]) return { ok: false, note: 'Unavailable' };
+    const g = S.girls[id], n = npcs[id];
+    if (!g || !g.met || !g.gf || g.aff < 85) return { ok: false, note: 'Girlfriend · ♥85' };
+    if (S.inside !== 'home' && S.inside !== 'room_' + id) return { ok: false, note: 'At your home or hers' };
+    if (!n || !(n.follow || n.inside === S.inside || (n.room && n.room.id === S.inside))) return { ok: false, note: 'Invite her to join you' };
+    if (Object.values(npcs).some((other) => other.id !== id && (other.follow || other.inside === S.inside || (other.room && other.room.id === S.inside)))) return { ok: false, note: 'Needs a moment alone' };
+    if (S.daily['flirt_' + id]) return { ok: false, note: 'Shared a moment today' };
+    if (S.time >= DAY_END - 10) return { ok: false, note: "Tomorrow—it's late" };
+    return { ok: true, note: 'Once a day · 10m · ask first' };
+  }
+
+  let privateFlirtRunning = false;
+  async function privateFlirt(id) {
+    if (privateFlirtRunning) return;
+    const available = privateFlirtAvailability(id);
+    if (!available.ok) { toast(available.note, 'info'); return; }
+    privateFlirtRunning = true;
+    busy();
+    clearMenu();
+    const scene = PRIVATE_FLIRT[id];
+    try {
+      await showLine('p', scene.request);
+      const answer = await choose([{ icon: '♥', t: 'Ask her' }, { icon: '↩', t: 'Not right now' }]);
+      if (answer !== 0) {
+        await narrate('No rush. You enjoy a quiet moment together.');
+        renderGirlMenu(id);
+        return;
+      }
+      // Either person can opt out, without a penalty or consuming the day.
+      if (!privateFlirtAvailability(id).ok || (lifeOn() && girlMood(id) === 'stressed')) {
+        await play(id, [scene.decline]);
+        renderGirlMenu(id);
+        return;
+      }
+      await play(id, [scene.consent]);
+      const yes = await choose([{ icon: '♥', t: "I'd like that" }, { icon: '↩', t: 'Maybe another time' }]);
+      if (yes !== 0) {
+        await narrate('You both smile. There is no pressure to do anything more.');
+        renderGirlMenu(id);
+        return;
+      }
+      S.daily['flirt_' + id] = true;
+      const g = actorPos(id), p = actorPos('player');
+      const accents = { wink: 'heart', proud: '!', shy: 'heart', curtsy: 'note', bounce: '!', calm: 'note', regal: 'heart', salute: '!' };
+      await cutscene({
+        actors: { player: { dir: facing(p, g) }, [id]: { pose: 'flirt', gesture: scene.animation, dir: 'down' } },
+        focus: { x: (p.x + g.x) / 2, y: (p.y + g.y) / 2 - 12 }, dur: 2400,
+        emotes: [{ who: id, kind: accents[scene.animation], at: 250, dur: 900 }, { who: 'player', kind: 'heart', at: 1000, dur: 1100 }],
+        fx: [{ kind: scene.animation === 'regal' ? 'stars' : 'sparkle', x: g.x, y: g.y - 30, at: 600 }],
+      });
+      endCut();
+      await play(id, [scene.reaction, scene.close]);
+      addAff(id, 3);
+      applyLife({ fun: 8 });
+      if (S.girls[id].life) S.girls[id].life.fun = clamp(S.girls[id].life.fun + 6, 0, 100);
+      if (!(await advanceTime(10))) return;
+      updateHud();
+      autosave(true);
+      renderGirlMenu(id);
+    } finally {
+      privateFlirtRunning = false;
+    }
   }
 
   // How each interaction looks in the world: who stands where, and the emotes.
@@ -3921,7 +4031,8 @@
         c.width = 32; c.height = 32;
         const x = c.getContext('2d');
         x.imageSmoothingEnabled = false;
-        x.drawImage(SPRITES.get(id, 'smile', false, null, wopts(id)), 8, 4, 32, 32, 0, 0, 32, 32);
+        if (window.CAST_ART && CAST_ART.has(id)) x.drawImage(CAST_ART.face(id, 'smile', wopts(id)), 0, 0, 32, 32);
+        else x.drawImage(SPRITES.get(id, 'smile', false, null, wopts(id)), 8, 4, 32, 32, 0, 0, 32, 32);
         b.appendChild(c);
         b.appendChild(el('span', '', id === 'player' ? esc(S.name) : GIRLS[id].name));
         b.addEventListener('click', () => { SFX.click(); openWardrobe(id, look); });
@@ -3943,7 +4054,7 @@
       px.imageSmoothingEnabled = false;
       const outfit = look === 'normal' ? (o.daily === 'casual' || o.daily === 'cosplay' ? o.daily : null) : look;
       const oo = Object.keys(o).length ? o : null;
-      px.drawImage(SPRITES.get(who, 'smile', false, outfit, oo), 0, 0);
+      px.drawImage(SPRITES.get(who, 'smile', false, outfit, oo), 0, 0, 48, 64);
       ['down', 'left', 'right', 'up'].forEach((d, i) => px.drawImage(WALKERS.get(who, d, 0, outfit, oo), 52 + i * 36, 12, 32, 48));
       pv.className = 'wardrobe-preview';
       body.appendChild(pv);
@@ -4049,7 +4160,8 @@
     c.width = 64; c.height = 64;
     const x = c.getContext('2d');
     x.imageSmoothingEnabled = false;
-    x.drawImage(SPRITES.get(id, met ? 'smile' : 'neutral'), 6, 2, 36, 36, 0, 0, 64, 64);
+    if (window.CAST_ART && CAST_ART.has(id)) x.drawImage(CAST_ART.face(id, met ? 'smile' : 'neutral', wopts(id)), 0, 0, 64, 64);
+    else x.drawImage(SPRITES.get(id, met ? 'smile' : 'neutral'), 6, 2, 36, 36, 0, 0, 64, 64);
     if (!met) { x.globalCompositeOperation = 'source-atop'; x.fillStyle = '#241c30'; x.fillRect(0, 0, 64, 64); }
     return c;
   }
@@ -4235,6 +4347,7 @@
 
   // ======================================================== walkthrough
   const GUIDE_TIPS = {
+    asuna: 'Meet her at Shirogane Dojo on weekday mornings. She loves cooking, honest encouragement and training partners who listen. Check her favourite gifts and confession requirements in this guide.',
     nami: 'Loves money talk and the sea. Work café shifts with her for easy hearts.',
     aqua: 'Flatter the goddess and give offerings at the shrine. She is always broke: lend her money in life mode.',
     yumeko: 'Play cards with her: blackjack at the casino or arcade, high-low anywhere else (from 1 heart). Win or lose, she loves the thrill.',
@@ -4271,7 +4384,8 @@
           '💍 <b>Engaged</b>: buy an Engagement Ring at the city gift boutique and propose somewhere outside.',
           '💒 <b>Married</b>: from the next day, plan the wedding at Mizu Shrine or Lighthouse Cape. Everyone comes, and you get her epilogue and a wedding photo.',
           '🎂 One-week and one-month anniversaries each get their own scene.',
-        ]) + '<p><b>Harem route</b>: every girl can be your girlfriend at once. Invite up to three to hang out together, and they will chat with each other.</p>';
+        ]) + '<p><b>Private flirt</b>: for girlfriends with this option, reach 8½ hearts and spend time alone at your home or hers. Ask first; either of you can decline without a penalty. Once per girl each day.</p>'
+          + '<p><b>Harem route</b>: every girl can be your girlfriend at once. Invite up to three to hang out together, and they will chat with each other.</p>';
       } else if (tab === 'girls') {
         for (const id of GIRL_ORDER) {
           const G = GIRLS[id], g = S && S.girls[id];
@@ -4597,10 +4711,11 @@
   if (/[?&]debug\b/.test(location.search)) {
     window.__SH = {
       get state() { return S; }, set state(v) { S = v; }, get mode() { return mode; }, get cut() { return view.cut; }, get cg() { return view.cg; },
+      get focus() { return view.focus; }, setFocus, portraitReaction,
       screenPos() { const c = camera(); return [(snap(S.px) - c.x) * L.worldK, (snap(S.py) - c.y) * L.worldK, c.x * L.worldK, c.y * L.worldK]; },
       SAVE, slotRecord, loadSlot, autosave,
       npcs, initNPCs, resume, enterWorld, enterRoom, girlMenu, newState, advanceTime, startFollow, newDay, runActivity, openWardrobe, outfitFor, openShop, goalFor,
-      useProp, openPhone, openGuide, chatPush, cosplayShoot, yumekoCards, renderGirlMenu, playmates, loveOf, partners,
+      useProp, openPhone, openGuide, chatPush, cosplayShoot, yumekoCards, renderGirlMenu, playmates, privateFlirtAvailability, loveOf, partners,
       get cityDate() { return cityDate; },
     };
   }

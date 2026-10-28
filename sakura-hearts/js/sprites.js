@@ -709,6 +709,78 @@
     },
   };
 
+  // Asuna — flowing chestnut hair with braided side locks, white-and-red
+  // knight's tunic and stockings. Her sheathed rapier stays at her hip.
+  LOOKS.asuna = {
+    eye: ['#603720', '#a46a3e', '#d5a46c'],
+    hair: { base: '#bf713e', light: '#f0b879', dark: '#86472e' },
+    hairBack(b) {
+      const h = this.hair;
+      b.ellipse(24, 17, 13.5, 12.5, h.base);
+      b.poly([[11, 11], [37, 11], [39, 29], [44, 43], [45, 55], [40, 52], [39, 59], [35, 55], [31, 58], [17, 58], [13, 55], [9, 59], [8, 52], [3, 55], [4, 43], [9, 29]], h.base);
+      b.clip = true;
+      b.poly([[10, 26], [8, 43], [5, 52], [10, 49], [12, 55], [15, 47], [14, 30]], h.dark);
+      b.poly([[36, 27], [39, 40], [42, 53], [38, 49], [36, 55], [34, 45]], h.dark);
+      b.line(11, 31, 9, 47, h.light); b.line(37, 30, 40, 46, h.light);
+      b.line(15, 35, 14, 53, h.light); b.line(33, 35, 35, 54, h.light);
+      b.clip = false;
+    },
+    hairFront(b) {
+      const h = this.hair;
+      // Centre-parted fringe leaves both warm brown eyes visible.
+      b.poly([[11, 24], [12, 13], [17, 7], [24, 5], [31, 7], [36, 13], [37, 24], [34, 21], [32, 17], [30, 20], [27, 16], [24, 12], [21, 17], [18, 21], [16, 18], [14, 24]], h.base);
+      polySym(b, [[11, 19], [10, 31], [10, 43], [12, 47], [14, 42], [15, 29], [14, 20]], h.base);
+      hairShine(b, h.light, 9);
+      b.clip = true;
+      b.line(24, 7, 24, 12, h.dark);
+      b.line(21, 13, 17, 18, h.dark); b.line(27, 13, 31, 18, h.dark);
+      b.line(12, 32, 12, 43, h.light); b.line(36, 32, 36, 43, h.light);
+      b.clip = false;
+      // Thin braids swept back from the temples, tied with white ribbons.
+      for (const [x, y] of [[11, 17], [10, 20], [10, 23], [11, 26], [37, 17], [38, 20], [38, 23], [37, 26]]) {
+        b.rect(x, y, 2, 2, h.light); b.set(x + 1, y + 1, h.dark);
+      }
+      b.rect(10, 28, 4, 1, '#f8f7f3'); b.rect(34, 28, 4, 1, '#f8f7f3');
+    },
+    body(b) {
+      const white = '#f8f7f3', shadow = '#d0cbd4', red = '#c82b3b', redD = '#922136';
+      neck(b);
+      // Long, split white surcoat panels behind the red pleated skirt.
+      b.poly([[16, 42], [21, 45], [17, 57], [12, 60], [14, 49]], white);
+      b.poly([[32, 42], [27, 45], [31, 57], [36, 60], [34, 49]], white);
+      b.line(14, 49, 12, 59, red); b.line(34, 49, 36, 59, red);
+      bareArms(b, 36, 7);
+      // White forearm gauntlets with a fine crimson cuff.
+      rectSym(b, 12, 42, 4, 5, white); rectSym(b, 12, 42, 4, 1, red);
+      rectSym(b, 12, 47, 4, 2, SKIN.base);
+      b.poly([[17, 35], [31, 35], [32, 45], [16, 45]], white);
+      b.rect(21, 34, 6, 2, white); b.line(20, 35, 18, 43, red); b.line(28, 35, 30, 43, red);
+      b.rect(17, 43, 14, 2, shadow);
+      // Knights of Blood cross and red edging on the armored tunic.
+      b.rect(23, 36, 2, 6, red); b.rect(21, 38, 6, 2, red);
+      b.poly([[16, 44], [32, 44], [35, 51], [13, 51]], red);
+      for (const x of [17, 21, 27, 31]) b.line(x, 45, x - 1, 50, redD);
+      b.rect(14, 50, 20, 1, '#e85865');
+      // White hip tabs frame the skirt, each with a little red cross.
+      b.poly([[17, 44], [22, 44], [21, 50], [17, 49]], white);
+      b.poly([[26, 44], [31, 44], [31, 49], [27, 50]], white);
+      for (const x of [19, 29]) { b.rect(x, 45, 1, 4, red); b.rect(x - 1, 46, 3, 1, red); }
+      rectSym(b, 18, 51, 4, 6, white);
+      rectSym(b, 18, 52, 4, 1, red);
+      b.line(18, 53, 21, 55, red); b.line(30, 53, 27, 55, red);
+      rectSym(b, 17, 57, 6, 2, white); rectSym(b, 17, 59, 6, 1, shadow);
+      rectSym(b, 19, 57, 2, 1, '#e1a1aa');
+    },
+    extra(b) {
+      // Narrow teal scabbard and a silver swept hilt, kept sheathed in town.
+      b.line(34, 43, 41, 58, '#285b69'); b.line(35, 43, 42, 58, '#3d8190');
+      b.line(41, 58, 42, 60, '#becbd5');
+      b.line(32, 37, 35, 43, '#dce7ed'); b.line(33, 37, 36, 43, '#849dab');
+      b.line(31, 41, 37, 39, '#edf5f8'); b.line(31, 41, 35, 44, '#c0d0dc');
+      b.set(32, 36, '#dce7ed');
+    },
+  };
+
   // --------------------------------------------------------------- builder
   const cache = new Map();
 
@@ -729,8 +801,9 @@
     frieren: { pick: 'one', one: { suit: '#f4f4f8', trim: '#d6aa44', frill: true }, bikini: { suit: '#f4f4f8', trim: '#d6aa44', skirt: true } },
     marin: { pick: 'bikini', one: { suit: '#1e1a24', trim: '#f4a6bc' }, bikini: { suit: '#f05a8a', trim: '#ffffff' } },
     krul: { pick: 'one', one: { suit: '#1e1a24', trim: '#c8203a', frill: true }, bikini: { suit: '#c8203a', trim: '#1e1a24', skirt: true } },
+    asuna: { pick: 'one', one: { suit: '#f8f7f3', trim: '#c82b3b', frill: true }, bikini: { suit: '#c82b3b', trim: '#f8f7f3', skirt: true } },
   };
-  const TOWEL = { player: '#e8eef8', nami: '#ffe0b8', aqua: '#d0ecff', yumeko: '#f4d0d8', kurumi: '#f0d0e0', rem: '#d8e8ff', zerotwo: '#ffd8e4', frieren: '#e4f4ec', marin: '#fff0c8', krul: '#f8d0dc' };
+  const TOWEL = { player: '#e8eef8', nami: '#ffe0b8', aqua: '#d0ecff', yumeko: '#f4d0d8', kurumi: '#f0d0e0', rem: '#d8e8ff', zerotwo: '#ffd8e4', frieren: '#e4f4ec', marin: '#fff0c8', krul: '#f8d0dc', asuna: '#ffe8dc' };
   const COAT = '#f4f2ec';
 
   // Resolve a character's beach look from the wardrobe options.
@@ -762,6 +835,7 @@
     frieren: { pick: 'gown', gown: { c: '#e4f4ec', trim: '#d6aa44' }, cap: true, capC: '#7cc49a', slip: '#e4f4ec' },
     marin: { pick: 'tee', tee: { c: '#ffd0e0', trim: '#f05a8a', alt: '#2a2a36' }, slip: '#f8a8c8' },
     krul: { pick: 'gown', gown: { c: '#3a1a2a', trim: '#c8203a', frill: true }, slip: '#1e1a24' },
+    asuna: { pick: 'set', set: { c: '#fff0e8', trim: '#c82b3b', pattern: 'stripes' }, slip: '#e6a1a4' },
   };
   // o: { pj: style, pjColor, cap: true|false }
   function pjLook(id, o = {}) {
@@ -860,6 +934,7 @@
     frieren: { pick: 'sweater', sweater: { c: '#c8b8e8', trim: '#a898d0', alt: '#f4f4f8' }, shoe: '#9a6a3a' },
     marin: { pick: 'croptop', croptop: { c: '#1e1a24', trim: '#f4a6bc', alt: '#6a8ac0' }, shoe: '#ffffff' },
     krul: { pick: 'hoodie', hoodie: { c: '#2a1a24', trim: '#c8203a', alt: '#8a1e2e' }, shoe: '#141018' },
+    asuna: { pick: 'blouse', blouse: { c: '#fff7ec', trim: '#c82b3b', alt: '#cf7f73' }, shoe: '#815038' },
   };
   // o: { cas: style, casColor }
   function casualLook(id, o = {}) {
@@ -1273,7 +1348,7 @@
   }
   // For the walking sprites: the closest family for a flat colour, in the
   // body area that walker colour is drawn in.
-  const WALK_BAND = { top: 0, trim: 0, sleeves: 0, tie: 0, ribbon: 0, accent: 0, band: 0, nightcap: 0, headTowel: 0, bikini: 0, openShirt: 0, stripes: 1, dots: 1, sash: 1, belt: 1, apron: 1, bottomC: 1, gownTrim: 2, legs: 2, shoes: 3 };
+  const WALK_BAND = { top: 0, trim: 0, sleeves: 0, tie: 0, ribbon: 0, accent: 0, band: 0, nightcap: 0, headTowel: 0, cross: 0, scabbard: 1, blade: 1, bikini: 0, openShirt: 0, stripes: 1, dots: 1, sash: 1, belt: 1, apron: 1, bottomC: 1, gownTrim: 2, legs: 2, shoes: 3 };
   function tintFlat(id, outfit, o, c, key) {
     const tint = o && o.tint && o.tint[lookKey(outfit, o)];
     if (!tint || !c || isSkin(c)) return c;
@@ -1382,6 +1457,7 @@
   }
 
   function get(id, expr = 'neutral', blink = false, outfit = null, o = null) {
+    if (!outfit && global.CAST_ART && global.CAST_ART.has(id)) return global.CAST_ART.portrait(id, expr, blink, o);
     const key = id + '|' + expr + '|' + blink + '|' + (outfit || '') + '|' + (o ? JSON.stringify(o) : '');
     if (!cache.has(key)) cache.set(key, buildBuf(id, expr, blink, outfit, o || {}).toCanvas(1));
     return cache.get(key);

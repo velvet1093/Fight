@@ -344,6 +344,36 @@
       no: ['Hmph.', 'Fine.'],
       fallback: ['What?', 'Speak clearly, human.', '...Strange human.'],
     },
+    asuna: {
+      greet: ['Hi, {name}! I was just putting my practice rapier away.', 'Hello! Have you eaten yet? I made extra sandwiches.', 'There you are, {name}. Ready to make today a good one?'],
+      how: ['A little tired from teaching, but everyone improved today. That makes it worth it.', 'Good! My new bread recipe finally worked. The first batch was... training material.', 'Better now. A quiet message from you is a nice way to finish practice.'],
+      doing: ['At {place}, taking a break between lessons. Remember to rest too!', 'I am at {place}. Planning tomorrow\'s practice and tonight\'s dinner.', 'At {place}. I promised myself I would slow down and enjoy the afternoon.'],
+      compliment: ['Thank you! I worked hard on that. It means a lot that you noticed.', 'Now you have made me blush. That was a very effective surprise attack.', 'You are sweet, {name}. I hope you are just as kind to yourself.'],
+      flirt: ['You make my heart race faster than a fencing match. That is not fair!', 'I miss you too. Shall we take a walk after practice?', 'Hold my hand? Yes. Just give me a moment to put the sword down first.'],
+      loveLow: ['I want us to really know each other first. Will you be patient with me?', 'That is a big promise. Let us build something real, one day at a time.'],
+      loveHigh: ['I love you too, {name}. Whatever tomorrow brings, let us face it together. ♥', 'You make an ordinary day feel precious. I want a future full of those days with you.'],
+      insult: ['That hurt. Please talk to me with the same respect I give you.', 'Being strong does not mean being cruel. I need you to understand that.', 'I am going to take a little space. We can talk when we are both ready to be kind.'],
+      sorry: ['Thank you for saying that. Let us try again, and be kinder this time.', 'I accept your apology. What matters now is how we treat each other.'],
+      thanks: ['You are welcome! That is what partners do: help each other.', 'Anytime. You would do the same for me, right?'],
+      bye: ['See you later! Watch your step on the way home.', 'Take care, {name}. Save a little time for yourself today.'],
+      night: ['Good night, {name}. Rest well. Tomorrow does not need to be rushed.', 'Sweet dreams. I am leaving the bread dough to rise, then going straight to bed.'],
+      food: ['A warm homemade stew, crusty bread, and good company. That is my favourite kind of dinner.', 'I packed sandwiches for after practice. The secret is giving the filling as much care as the bread.', 'Cooking is like fencing: pay attention, practise, and do not panic when something goes wrong!'],
+      work: ['I teach fencing at the dojo. Watching a beginner find their confidence is the best part.', 'Good footwork before flashy moves! That is the lesson I keep repeating today.', 'A fair wage, a proper lunch break, and work you can be proud of. Everyone deserves that.'],
+      weather: ['It is {weather} today. We can adjust our plans and still have a lovely time.', '{weather}? Then I will pack an extra layer and something warm for us to drink.'],
+      gift: ['Something you chose thoughtfully is more precious than anything expensive.', 'Flowers or a little treat for our picnic would be lovely. You do not need to spoil me.'],
+      laugh: ['Haha! You nearly made me drop my mixing spoon!', 'That was terrible. Tell me another one.'],
+      aboutHer: ['I am Asuna, a fencing instructor. I love cooking, a good challenge, and people who keep their promises.', 'I used to measure a good day by how much I accomplished. Now I am learning that sharing a meal counts too.'],
+      userSad: ['You do not have to be strong every minute. Would you like company, or someone to listen?', 'Come sit with me if you want. I can make tea, and we can take the next step when you are ready.'],
+      userHappy: ['You did it! I knew your hard work would pay off. Let us celebrate!', 'I am proud of you, {name}. Tell me everything!'],
+      girl: ['{girl}? I am glad we have people we can count on in this town.', 'How is {girl} doing? Maybe we could share a picnic sometime.'],
+      remember: ['{fact}. Got it! I will remember that next time I plan something for us.', 'Thank you for telling me. {fact}. The little things matter.'],
+      recall: ['Of course I remember: {fact}. I pay attention to the people I care about.', '{fact}. You told me, and I kept it in mind.'],
+      forgot: ['I do not think you have told me yet. I would like to know!', 'Tell me? I do not want to guess something that matters to you.'],
+      question: ['Let me think about that. I would rather give you an honest answer than a quick one.', 'That is a good question. We could figure it out together.'],
+      yes: ['Then it is settled! Let us give it our best.', 'Good. I am glad we are on the same page.'],
+      no: ['That is all right. Tell me what you would prefer.', 'Understood. We can find another way.'],
+      fallback: ['I am not sure I understood. Tell me a little more?', 'You have my attention, {name}. What is on your mind?', 'One thing at a time, like footwork. What would you like to talk about?'],
+    },
   };
   // her follow-up questions
   const BACK = {
@@ -356,6 +386,7 @@
     frieren: ['...And you? How are you?', 'Did anything nice happen?', 'What are you doing now?'],
     marin: ['What about you?! Tell me everything!', 'Wait, what are you watching lately?!', 'Have you seen any good anime?!'],
     krul: ['And you, human? Still alive?', 'What are you doing, human?', 'Are you behaving?'],
+    asuna: ['How did your day go?', 'Have you had a proper meal today?', 'What is one thing you would like us to do together?'],
   };
 
   const lastPick = {};

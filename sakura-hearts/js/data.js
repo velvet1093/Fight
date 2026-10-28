@@ -159,6 +159,7 @@
     // ------------------------------------------------------------------ NAMI
     nami: {
       name: 'Nami',
+      age: 20,
       full: 'Nami',
       color: '#f2913d',
       bio: 'Cheerful waitress at Café Lumière. Saving every yen to sail the world and draw her own maps.',
@@ -1792,7 +1793,7 @@
     marin: { start: ['happy', 'A walk? Yes! I need to find new photo spots anyway!'], fav: ['love', "The beach at sunset... this is literally a dating-sim CG. And it's us!"], favArea: 'beach' },
   };
 
-  const GIRL_ORDER = ['nami', 'aqua', 'yumeko', 'kurumi', 'rem', 'zerotwo', 'frieren', 'marin', 'krul'];
+  const GIRL_ORDER = ['nami', 'aqua', 'yumeko', 'kurumi', 'rem', 'zerotwo', 'frieren', 'marin', 'krul', 'asuna'];
 
 
   // Staying the night: at your place once she's a Close Friend, at hers once
@@ -2580,5 +2581,337 @@
     any: { game: 'highlow', title: 'High or Low with Yumeko', intro: ['smile', 'A quick game? Higher or lower. Get five in a row and you win.'], win: ['love', "You won! Your luck is almost as good as mine."], lose: ['smug', 'Ufufu. So close.'] },
   };
 
-  global.DATA = { SLOTS, DAYS, STAGES, CAPS, LOCATIONS, ACTIVITIES, ITEMS, FORTUNES, GIRLS, GIRL_ORDER, WEATHER, RAIN_SHELTER, INTERACTIONS, WALK_LINES, SLEEPOVER, FOODS, CITY, PAIRS, HAREM, LIFE, LIFE_FX, COSPLAYS, POSES, VS, YUMEKO_CARDS, CHAT, VARIETY, ENDGAME, TEASE, NIGHT };
+  // Asuna's route: learning to make a home after a life spent fighting.
+  GIRLS.asuna = {
+    name: 'Asuna', full: 'Asuna Yuuki', color: '#e66b54',
+    bio: 'A warm-hearted fencing instructor known as the Lightning Flash. Her white-and-red uniform and chestnut hair are easy to spot at the dojo. Fiercely loyal, quietly competitive, and happiest cooking for people she trusts.',
+    stranger: 'the chestnut-haired swordswoman in white and red',
+    schedule: {
+      weekday: [[360, 'apartments'], [480, 'dojo'], [720, 'cafe'], [840, 'school'], [1020, 'park'], [1200, 'apartments']],
+      weekend: [[360, 'park'], [540, 'dojo'], [720, 'bakery'], [900, 'flowers'], [1080, 'cape'], [1260, 'apartments']],
+    },
+    req: { fitness: 40, smarts: 25 }, reqText: 'Fitness 40 & Smarts 25',
+    gifts: { charm: 'loved', crepe: 'loved', chocolate: 'loved', flowerpin: 'loved', flowers: 'liked', book: 'liked', honey: 'liked', ribbon: 'liked', plushie: 'liked', dice: 'disliked' },
+    dates: { cafe: 'loved', park: 'loved', beach: 'ok', mall: 'ok', arcade: 'ok', shrine: 'ok', flowers: 'loved', cape: 'loved', onsen: 'loved' },
+    intro: [
+      ['n', 'A young woman in a white-and-red fencing uniform catches a falling practice sword before it reaches the floor. Long chestnut hair swings over her shoulder.'],
+      ['smile', 'Careful! Always check the space around you before you swing. Here, let me fix your grip.'],
+      ['p', "Thanks. I'm {name}. You make that look easy."],
+      ['happy', 'Asuna Yuuki. I teach fencing at the dojo. It only looks easy because I have done the boring drills a thousand times.'],
+      ['smile', 'Come train with me sometime. Beginners are welcome. Skipping breakfast is not.'],
+    ],
+    topics: [
+      { min: 0, q: [['smile', 'What matters most when you face someone stronger than you?']], opts: [
+        { t: 'Stay calm and look for a way to help my team.', v: 6, r: [['happy', 'Exactly. You do not have to win alone. That is our first lesson.']] },
+        { t: 'Practice until I can keep up.', v: 4, r: [['smile', 'Good. And rest between sessions. Injuries do not award extra points.']] },
+        { t: 'Let someone else take the risk.', v: -3, r: [['sad', 'A teammate is a person, not a shield you can throw away.']] },
+      ] },
+      { min: 0, q: [['happy', 'I am testing a stew recipe. What should I do if it is missing something?']], opts: [
+        { t: 'Taste it with me. We can work it out together.', v: 6, r: [['blush', 'A volunteer taste tester? You realize that is a long-term commitment.']] },
+        { t: 'Try a little more seasoning at a time.', v: 4, r: [['smile', 'A sensible answer. You may be trusted near the spice rack.']] },
+        { t: 'Hide it under lots of sugar.', v: -2, r: [['surprised', 'In a stew? Please step away from my kitchen.']] },
+      ] },
+      { min: 0, q: [['calm', 'Everyone asks about the Lightning Flash. Would you rather hear about sword techniques or my day?']], opts: [
+        { t: 'Your day. How are you, Asuna?', v: 6, r: [['blush', '...A little tired, honestly. Thank you for asking about me, not the nickname.']] },
+        { t: 'Techniques first, then your day.', v: 3, r: [['smile', 'A balanced lesson plan. I can work with that.']] },
+        { t: 'Just the nickname. It sounds impressive.', v: -2, r: [['neutral', 'It is only a nickname. There is a person attached to it.']] },
+      ] },
+      { min: 20, q: [['calm', 'I used to plan every minute around getting stronger. What would you do with a completely free afternoon?']], opts: [
+        { t: 'Walk somewhere with you, with no goal at all.', v: 7, r: [['smile', 'No timer? No rankings? ...I think I would like that very much.']] },
+        { t: 'Try a recipe I have never made.', v: 5, r: [['happy', 'Now that is an adventure I can get behind.']] },
+        { t: 'Train. Rest is a waste of time.', v: -3, r: [['sad', 'I used to tell myself that. It was not true.']] },
+      ] },
+      { min: 20, q: [['smug', 'My students challenged me to an arcade race. Should I go easy on them?']], opts: [
+        { t: 'Give them a fair challenge, then cheer when they improve.', v: 6, r: [['happy', 'You understand teaching. Would you like to be my assistant?']] },
+        { t: 'Let them win one round.', v: 3, r: [['smile', 'Only if they cannot tell. They are surprisingly observant.']] },
+        { t: 'Crush them until they stop trying.', v: -4, r: [['sad', 'Then I would have failed as their teacher.']] },
+      ] },
+      { min: 45, q: [['blush', 'I made two lunches again. It is becoming a habit. Do you mind?']], opts: [
+        { t: 'Only if you forget to sit down and eat yours with me.', v: 8, r: [['love', 'Deal. Two lunches, one table. I like that arrangement.']] },
+        { t: 'I will make the next ones.', v: 6, r: [['happy', 'Then I will bring dessert. No arguments.']] },
+        { t: 'Free food is free food.', v: -2, r: [['neutral', 'It is not just about the food, you know.']] },
+      ] },
+      { min: 45, q: [['calm', 'When someone you care about is in trouble, is protecting them the same as deciding everything for them?']], opts: [
+        { t: 'No. Ask what they need, and stand beside them.', v: 8, r: [['blush', 'Beside them. Not in front of them forever. ...Yes.']] },
+        { t: 'Sometimes you have to act quickly.', v: 4, r: [['smile', 'True. But afterward, you listen.']] },
+        { t: 'They should just do what you say.', v: -4, r: [['sad', 'That sounds like another cage. I do not want one.']] },
+      ] },
+      { min: 65, q: [['blush', 'When I imagine next spring, I keep setting another place at my table. Is that silly?']], opts: [
+        { t: 'Save it for me. I want to be there.', v: 8, r: [['love', 'Then I will. Every spring. No disappearing without telling me, alright?']] },
+        { t: 'It sounds like you have found a home.', v: 5, r: [['smile', 'I think I am still finding it. But I know who I want in it.']] },
+        { t: 'Planning that far ahead is pointless.', v: -3, r: [['sad', 'For me, being able to plan a future means everything.']] },
+      ] },
+    ],
+    small: [
+      ['happy', 'A student finally got her first clean parry today! I think I was more excited than she was.'],
+      ['smile', 'The bakery lent me their oven for a new pie recipe. I promised not to turn it into a fencing lesson.'],
+      ['smug', 'My footwork is faster than my texting. That does not mean I missed your message.'],
+      ['calm', 'The park is so quiet after practice. You can hear the petals land if you stop rushing.'],
+      ['blush', 'I bought enough groceries for two. It seemed practical. ...You are free for dinner, right?'],
+    ],
+    giftLines: {
+      loved: [['love', 'You remembered! This is exactly my kind of thing. Thank you, {name}. I am keeping it close.']],
+      liked: [['happy', 'For me? How thoughtful. Let me make you something in return sometime.']],
+      neutral: [['smile', 'Thank you for thinking of me. Finding a place for it will be part of the fun.']],
+      disliked: [['neutral', 'I am not much for betting things on luck. Could we choose something together next time?']],
+    },
+    dateLines: {
+      cafe: ['love', 'A warm table, fresh bread, and you. This is worth slowing down for. Let us split the cake.'],
+      park: ['love', 'No drills today. Just blossoms and a walk at your pace. ...May I take your hand?'],
+      beach: ['happy', 'The sea goes on forever. Want to race to the water? I will even give you a head start.'],
+      mall: ['smile', 'I came for a kitchen timer. Somehow we are looking at matching mugs. I am not complaining.'],
+      arcade: ['smug', 'A friendly match? Absolutely. I like you, but I will still be trying to win.'],
+      shrine: ['calm', 'I wished for everyone I care about to come home safely. You were in that wish, {name}.'],
+      flowers: ['love', 'Look at the white and red flowers growing together. We should bring a little of this color home.'],
+      cape: ['love', 'We made it before sunset. For once, I do not need to look beyond the next horizon. I am happy right here.'],
+      onsen: ['blush', 'My shoulders have not relaxed like this in ages. Let us leave every competition outside the door.'],
+    },
+    moments: [
+      { q: [['smile', 'I packed a picnic. There is one last strawberry. What shall we do?']], opts: [
+        { t: 'Share it, of course.', v: 7, r: [['blush', 'A very diplomatic solution. Come closer, then.']] },
+        { t: 'You made lunch. It is yours.', v: 5, r: [['happy', 'Then you get to choose the next dessert.']] },
+        { t: '(Eat it before she can answer.)', v: -2, r: [['surprised', 'Hey! Negotiations were still underway.']] },
+      ] },
+      { q: [['calm', 'I keep thinking about all the things we could do next. Is it alright if we just sit here for a while?']], opts: [
+        { t: 'As long as you like. I am glad to be with you.', v: 8, r: [['love', 'Then this is our plan. Sitting here, together.']] },
+        { t: 'I could use a break too.', v: 4, r: [['smile', 'Good. We can be sensible together for once.']] },
+        { t: 'We are wasting the afternoon.', v: -3, r: [['sad', 'I thought spending it with each other was the point.']] },
+      ] },
+      { q: [['blush', 'I can face a room full of opponents without shaking. Holding your hand should not be harder, should it?']], opts: [
+        { t: '(Offer your hand and wait for hers.)', v: 8, r: [['love', '...There. That was not so frightening after all.']] },
+        { t: 'We can both be a little nervous.', v: 5, r: [['smile', 'A team effort. I like our chances.']] },
+        { t: 'You are overthinking it.', v: -2, r: [['neutral', 'Perhaps. But it matters to me.']] },
+      ] },
+    ],
+    events: [
+      { title: 'A Place at the Table', lines: [
+        ['n', 'After practice, Asuna carefully unwraps two homemade lunches. She hesitates before setting the second one in front of you.'],
+        ['calm', 'When I first came here, I ate as quickly as I could. There was always something else I had to be ready for.'],
+        ['blush', 'Now I find myself wondering what you would like for dinner. It is such a small thing. Why does it feel so important?'],
+      ], opts: [
+        { t: 'Because we are making a life, not just getting through a day.', v: 8, r: [['love', 'A life. ...Yes. That is what I want. Will you help me make it?']] },
+        { t: 'I would like to cook with you next time.', v: 6, r: [['happy', 'Then I will save you an apron. And half the washing up.']] },
+        { t: 'It is only lunch.', v: -2, r: [['sad', 'Perhaps. But I hoped you would understand.']] },
+      ] },
+      { title: 'Lowering Her Guard', lines: [
+        ['n', 'The dojo is quiet after the last lesson. Asuna puts her practice sword on its rack, but her hand lingers on the hilt.'],
+        ['calm', 'People trust me to be strong. Sometimes I am afraid that if I stop being useful, I will stop being wanted.'],
+        ['sad', 'I know that is not fair to the people who love me. It is just a difficult habit to break.'],
+      ], opts: [
+        { t: 'You do not have to earn your place beside me.', v: 8, r: [['blush', 'Not a title. Not a perfect score. Just me?'], ['love', '...Then I would like to put the sword down for tonight. Stay with me, {name}.']] },
+        { t: 'Let me be the one who brings dinner tonight.', v: 6, r: [['smile', 'I think I can learn to accept that. No correcting your seasoning. I promise.']] },
+        { t: 'Everyone has to be useful somehow.', v: -3, r: [['sad', 'I was hoping home could be different.']] },
+      ] },
+    ],
+    confess: {
+      ask: [['p', 'Asuna, I love you. I want the adventures, the quiet evenings, and the ordinary days. I want to share them with you.']],
+      yes: [
+        ['blush', 'I have been brave about a lot of things. Somehow saying this is the hardest one.'],
+        ['love', 'I love you too, {name}. Not because you need protecting. Because you make me want to build a future.'],
+        ['happy', 'So that is a promise. We face things together, we tell each other the truth, and we come home for dinner.'],
+      ],
+      no: [['calm', 'You are important to me. But I need a partner who will look after themselves and think things through.'], ['smile', 'Keep training your body and your mind. I would like us to stand beside each other as equals. Please ask me again.']],
+    },
+    gfLines: [
+      ['love', 'Welcome back, {name}. Dinner can wait one minute. I want a hug first.'],
+      ['smug', 'I am still going to beat you at the arcade. Being in love has not made me slow.'],
+      ['blush', 'I like saying we have plans for next spring. It makes the future feel warm.'],
+      ['love', 'Whatever kind of day you had, you do not have to carry it alone. I am here.'],
+    ],
+    ending: 'At sunset, Asuna hangs her practice sword beside the door and sets two bowls on the kitchen table. The window is open to the sound of the town settling down. "I used to think happiness was something waiting after the next battle," she says, taking your hand. "But it is this. Coming home, making dinner, and knowing we get to choose tomorrow together." She smiles. "Welcome home, {name}."',
+    birthday: 24, birthdayLines: [['love', 'You remembered my birthday! I made a cake, but I saved the first slice for us to share.']],
+    react: {
+      compliment: ['blush', 'That is a much more effective way to make me lose my balance than a feint.', 4],
+      joke: { ok: ['happy', 'Ha! Alright, that one got past my guard.', 4], fail: ['neutral', 'I think that joke needs a little more practice.', -1] },
+      tease: ['smug', 'Oh? Keep that confidence for our next friendly match.', 3],
+      pat: ['blush', 'You will undo the braid... Actually, it can wait.', 4],
+      hands: ['love', 'There. We can find our way at the same pace.', 5],
+      hug: ['love', 'Just a little longer. I did not realize how much I needed this.', 6],
+      kiss: ['love', '...You found the one opening in my guard. I am glad you did.', 4],
+    },
+    weather: {
+      rain: [['smile', 'I brought an umbrella. Come under it before you catch a cold.']],
+      storm: [['calm', 'Let us get indoors. Watching the storm together sounds better than trying to outrun it.']],
+      blossom: [['love', 'A whole sky full of petals. No finishing line today. Let us just enjoy it.']],
+    },
+    weatherBonus: { blossom: 5 },
+    encounters: [
+      { lines: [['happy', 'I was testing the bakery recipe. Would you try one?'], ['n', 'Asuna wraps a strawberry crepe and hands it to you.']], item: 'crepe' },
+      { lines: [['smile', 'Good timing! I have finished teaching. Walk with me for a bit?']] },
+      { lines: [['blush', 'I saw a pair of mugs in the shop and thought of... Never mind. How was your day?']] },
+    ],
+    invitePlaces: ['park', 'cafe', 'flowers'],
+    invite: '⚔️ Asuna: I packed lunch for two. Meet me at {place} at {time}? No rushing.',
+    inviteMeet: [['happy', 'Right on time! I was hoping you would come.'], ['smile', 'The second lunch was always for you. Sit down before it gets cold.']],
+    inviteMissed: '⚔️ Asuna: I waited with lunch. Are you alright? Please let me know next time, even if your plans change.',
+  };
+
+  WALK_LINES.asuna = { start: ['happy', 'I am done racing the clock for today. Let us walk together.'], fav: ['love', 'The blossoms are even better when I have someone to slow down with.'], favArea: 'park' };
+  SLEEPOVER.asuna = {
+    mine: ['smile', 'I would like that. I will bring breakfast ingredients, if you have room in the fridge.'],
+    hers: ['blush', 'Come over, then. My apartment is small, but there is room for us to make dinner.'],
+    arrive: ['happy', 'Your place feels like you. Where should I leave these groceries?'],
+    room: ['smile', 'Welcome in. The practice sword stays by the door. Tonight is for resting.'],
+    talk: { q: [['calm', 'What would our perfect ordinary morning look like?']], opts: [
+      { t: 'Cooking breakfast together, with nowhere we have to rush.', v: 6, r: [['love', 'Then tomorrow, that is our mission. A very important one.']] },
+      { t: 'A walk before the town wakes up.', v: 4, r: [['smile', 'Then I will pack something we can eat by the fountain.']] },
+      { t: 'Training before sunrise. No breaks.', v: -1, r: [['neutral', 'Even instructors need a morning off, you know.']] },
+    ] },
+    night: ['smile', 'Good night, {name}. Tomorrow can wait until we have had some sleep.'],
+    nightGf: ['love', 'You are here, and we are safe. That is enough for tonight. Good night, my love.'],
+    morning: ['happy', 'Good morning! I started breakfast. Come help me with the toast before I eat it all.'],
+  };
+  CITY.asuna = {
+    train: ['happy', 'A day out together! I marked a little restaurant on the map. We do not have to follow a schedule, though.'],
+    prefs: { mcronalds: 'ok', kitsune: 'ok', sushi: 'loved', fashion: 'ok', purikura: 'loved', fancy: 'loved' },
+    lines: {
+      mcronalds: ['smile', 'A burger after a long walk is hard to beat. You have sauce on your cheek. Hold still.'],
+      kitsune: ['happy', 'The seasoning is wonderful. I am trying to work out the recipe. Help me taste this piece?'],
+      sushi: ['love', 'Fresh fish, warm rice, and a seat beside you. I would happily make this our little tradition.'],
+      fashion: ['blush', 'Something other than my uniform? Alright. Help me choose a dress I can actually move in.'],
+      purikura: ['love', 'A photo of an ordinary happy day. That is exactly the kind of memory I want to keep.'],
+      fancy: ['love', 'Candlelight suits you. Tonight I will let someone else cook, and give you my full attention.'],
+    },
+    bye: ['love', 'I had a wonderful time. Let us go home together. I already want to plan the next one.'],
+  };
+  Object.assign(PAIRS, {
+    'nami|asuna': [['nami', 'smug', 'Asuna, I can sell maps to your tournament visitors. A partnership?'], ['asuna', 'smile', 'Only if the route to the dojo is clear and the price is fair.'], ['nami', 'happy', 'Tough negotiator! I like you.']],
+    'aqua|asuna': [['aqua', 'happy', 'Asuna! A goddess requires a huge lunch after blessing people!'], ['asuna', 'smile', 'I packed enough for everyone. Will you help wash the dishes?'], ['aqua', 'surprised', 'A divine... dishwashing trial?']],
+    'yumeko|asuna': [['yumeko', 'smug', 'A little wager on our next match, Asuna-san?'], ['asuna', 'smile', 'No money. The loser puts away the practice gear.'], ['yumeko', 'happy', 'An honest stake. How refreshing.']],
+    'kurumi|asuna': [['kurumi', 'smug', 'Ara, the Lightning Flash. Do you ever allow yourself a slow afternoon?'], ['asuna', 'blush', 'I am learning. You could help by pouring the tea.'], ['kurumi', 'smile', 'With pleasure. We have all the time we need.']],
+    'rem|asuna': [['rem', 'happy', 'Asuna-san, Rem brought her curry recipe!'], ['asuna', 'happy', 'Perfect! I will show you my stew. We can trade notes.'], ['rem', 'smile', 'Everyone will have such a good dinner tonight!']],
+    'zerotwo|asuna': [['zerotwo', 'smug', 'Lightning girl! Race me to the bakery!'], ['asuna', 'happy', 'After a warm-up. And you are not jumping over any customers.'], ['zerotwo', 'smile', 'Fine! But I get the honey toast.']],
+    'frieren|asuna': [['frieren', 'calm', 'Your sword has a good balance. It reminds me of an old companion.'], ['asuna', 'smile', 'Someone you trusted?'], ['frieren', 'smile', 'Yes. You would have gotten along.']],
+    'marin|asuna': [['marin', 'love', 'Asuna! Your white-and-red outfit is AMAZING! Can I study the pattern?'], ['asuna', 'happy', 'Of course. If you help me keep the braid from tangling in the collar.'], ['marin', 'happy', 'Costume teamwork! Leave it to me!']],
+    'krul|asuna': [['krul', 'smug', 'Swordswoman. Does your famous stew contain garlic?'], ['asuna', 'smile', 'Not in your bowl. I remembered.'], ['krul', 'blush', '...A competent human. You may cook again.']],
+  });
+  HAREM.asuna = {
+    confess: ['calm', 'I know there are other people you love. I need honesty, and promises we can actually keep. If we can all choose this freely, I want a place beside you too.'],
+    pair: ['smile', 'No one gets left out. Let us talk about our plans, then I will make enough lunch for everyone.'],
+  };
+  VARIETY.asuna = {
+    dateEarly: [['smile', 'A date? Let us get to know each other first. You can start by joining me after practice.'], ['blush', 'That is sweet, but a little fast. Even the Lightning Flash needs time with these things.']],
+    dateYes: [['happy', 'I would love to. I am putting the lesson plans away. Where shall we go?'], ['blush', 'A date with you? Yes. And for once, I will not bring my practice sword.']],
+    dateRain: [['smile', 'I packed an umbrella. There is room if you stand a little closer.'], ['happy', 'A change of plans is not a ruined day. Let us find somewhere warm together.']],
+    dateBlossom: [['love', 'All these petals, and no need to hurry anywhere. I want to remember this with you.'], ['blush', 'There is a blossom caught in your hair. Hold still. ...There. Perfect.']],
+    walkEarly: [['smile', 'Let me finish my lesson first. We should know each other a little better before a long walk.'], ['calm', 'Not just yet. Come chat after practice sometime.']],
+    nightEarly: [['blush', 'An overnight stay is a big step. Let us take the smaller ones first.'], ['smile', 'I am not ready for that yet. But I am glad you asked instead of assuming.']],
+    anythingElse: ['What is on your mind?', 'I have a little more time for you.', 'Another question? Go ahead.', 'We do not have to rush.'],
+    chatAbout: ['Asuna describes a student finally mastering a parry. Her pride is infectious.', 'You compare favorite comfort foods. Asuna starts planning a new recipe.', 'Asuna tells you about a quiet walk she took without counting a single step.'],
+    potionDrink: ['surprised', 'A potion from Frieren? Did she label the ingredients this time? ...Alright, a small sip.'],
+    potionLove: ['blush', 'My heart is racing faster than a tournament final. Stay a moment, {name}. I want to hear your voice.'],
+    crepe: ['happy', 'Fresh strawberries! We should try making these together. Here, you get the first bite.'],
+    outfit: ['love', 'You chose this for me? Then I know exactly what I am wearing on our next date.'],
+    vsStart: ['A friendly match, but I am still trying my best!', 'Let us see how your reflexes hold up.', 'No excuses about the controller afterward. Ready?'],
+    bday: ['happy', 'It is my birthday! I made cake, but spending a little time with you is what I was hoping for.'],
+    oops: ['calm', 'It is alright. We will find somewhere to clean up. Everyone has difficult days.'],
+  };
+  CHAT.asuna = {
+    hey: ['Morning practice went well! Have you had breakfast? ⚔️', 'Testing a stew recipe. I saved you a bowl. 🍲', 'Finished teaching early. The park looks lovely today. 🌸'],
+    yes: 'I will be there. I will pack a little lunch for us too. 😊',
+    no: 'I have a lesson then. Could we choose another time? I do want to see you.',
+    love: 'Now I am smiling at my phone between lessons. I was thinking of you too. ❤️',
+    night: 'Good night, {name}. Rest well. We have another whole day to look forward to. 🌙',
+  };
+  LIFE.asuna = {
+    job: 'Fencing instructor at Shirogane Dojo', work: 'dojo', wage: 75, rent: 80, hobby: ['fresh ingredients and equipment repairs', 8], start: 450,
+    broke: ['blush', 'I replaced the beginners\' practice gear before checking my rent. A small loan would help. I will write down what I owe you.'],
+    hungry: ['happy', 'You brought lunch for me? Usually I am the one asking everyone to eat. Thank you for noticing.'],
+    stressed: ['sad', 'Too many lessons, not enough rest. Could we sit somewhere quiet for a little while?'],
+  };
+  VS.asuna = {
+    skill: { kart: 1.15, stack: 1.0, rhythm: 1.15, mash: 1.2 },
+    win: ['happy', 'Good match! You nearly caught me that time. Shall we try again?'],
+    lose: ['smile', 'A clean win. Well played! Now I definitely want a rematch.'],
+  };
+  ENDGAME.asuna = {
+    serious: [['blush', "I have been thinking about this all through practice. I do not want to keep counting days with you like they might run out."], ['love', "So I am saying it properly: this is serious for me. You are the person I want to come home to."]],
+    anniv7: ['happy', "One week! I made the stew from the day we met. I promise the recipe has improved since then."],
+    anniv30: ['love', "A whole month. I used to measure time in training sessions. Now I measure it in mornings with you."],
+    moveAsk: ['love', "Live together? A real home, with two names on the door? ...Yes. I will bring the good pans."],
+    moveMorning: [['smile', "Good morning. Breakfast is almost ready. You have exactly three minutes to wake up."], ['blush', "You kept stealing the blanket last night. I let you. Just this once."]],
+    propose: { ask: [['surprised', "{name}? Why are you kneeling... is that a ring?"]], yes: [['love', "Yes. A thousand times, yes. I spent so long fighting for a future. I want to build this one with you."]] },
+    vow: ['love', "I promise to stand beside you, on easy days and hard ones. No more fighting alone. From today, we are a team for life."],
+    guest: ['happy', "Congratulations, both of you! I helped with the cake. Please tell everyone the stew was mine too."],
+    epilogue: "Years later, Asuna still teaches at the dojo in the mornings, but the evenings belong to your kitchen. Her practice sword hangs by the door, and the table is always set for two, sometimes more when friends drop by.",
+    neglect: "⚔️ Asuna: It has been days, {name}. I am not angry. I just miss you. Are you alright?",
+    makeup: [['sad', "You went quiet on me. I kept checking my phone between lessons."], ['smile', "...Alright. You are here now. But you are helping me cook dinner tonight."]],
+    couple: {
+      cuddle: ['love', "Mm. Five more minutes. Even the Lightning Flash is allowed to be slow sometimes."],
+      forehead: ['blush', "A forehead kiss? ...You caught me with my guard down. Again."],
+      piggyback: ['happy', "Onward! ...Do not tell my students about this, alright?"],
+      feed: ['happy', "Ahh... mm! You seasoned this yourself? I am impressed, teammate."],
+      dance: ['love', "Your footwork is not bad. Keep your eyes on me, not your feet."],
+    },
+  };
+  // Optional, fully clothed romantic moments. The scene runner checks privacy,
+  // relationship progress, and mutual consent before using these animations.
+  const PRIVATE_FLIRT = {
+    nami: {
+      animation: 'wink',
+      request: 'Nami, would you like to take a quiet minute together? No errands, no work.',
+      consent: ['smile', 'For my favourite person? Yes. And this time there is no admission fee.'],
+      decline: ['calm', 'Not just now. My head is still full of receipts. Can we have our little moment later?'],
+      reaction: ['smug', 'There. One perfectly timed wink. Tell me that was not worth stopping for.'],
+      close: ['blush', '...You smiled. Good. That is what I was hoping for.'],
+    },
+    aqua: {
+      animation: 'proud',
+      request: 'Aqua, may I have a moment with you, just the two of us?',
+      consent: ['happy', 'Your goddess grants this request! ...I mean, yes. I would like that.'],
+      decline: ['calm', 'Even a goddess runs out of energy. Let me rest first, alright?'],
+      reaction: ['smug', 'Behold! My most radiant smile, especially for you! ...Was that too dramatic?'],
+      close: ['blush', 'You like the dramatic part? Oh. Then I am glad you stayed.'],
+    },
+    kurumi: {
+      animation: 'shy',
+      request: 'Kurumi, would you like a quiet moment together? Only if you feel like it.',
+      consent: ['smile', 'Ara, how nicely you ask. Yes, darling. I have time for you.'],
+      decline: ['calm', 'Not this moment, darling. My thoughts are elsewhere. Ask me again when I can give you my attention.'],
+      reaction: ['blush', 'A little step closer, a little smile... Somehow you still make me forget what I meant to say.'],
+      close: ['love', 'Let us keep this minute. There is no need to make it hurry.'],
+    },
+    rem: {
+      animation: 'curtsy',
+      request: 'Rem, could we take a little break together? You do not have to do anything for me.',
+      consent: ['blush', 'Yes, {name}-kun. Rem would like to spend this moment with you.'],
+      decline: ['calm', 'Rem is a little tired right now. Could we rest first, then spend some time together?'],
+      reaction: ['happy', 'Rem practiced that little bow. It was supposed to look graceful... Was it alright?'],
+      close: ['love', 'Then Rem is happy. Next time, just sitting beside you would be lovely too.'],
+    },
+    zerotwo: {
+      animation: 'bounce',
+      request: 'Want a little time together, Zero Two? No racing, just us.',
+      consent: ['smug', 'Just us? Yes, darling. You have my attention.'],
+      decline: ['calm', 'Not right now, darling. I need a breather. Stay nearby, but give me a little room?'],
+      reaction: ['happy', 'One victory hop! What am I celebrating? Getting to spend the afternoon with you, obviously.'],
+      close: ['blush', 'There is that smile. I like being the reason for it.'],
+    },
+    frieren: {
+      animation: 'calm',
+      request: 'Frieren, would you like to stop for a moment and keep me company?',
+      consent: ['smile', 'Yes. I was hoping you would ask. I am getting better at saying that part aloud.'],
+      decline: ['calm', 'Not now. I am very tired. That is not an invitation to wait a hundred years. Just a little while.'],
+      reaction: ['blush', 'I read that a small nod and a smile can say quite a lot. ...Did it work?'],
+      close: ['love', 'Good. I would like to remember how you looked just then.'],
+    },
+    krul: {
+      animation: 'regal',
+      request: 'Krul, would you enjoy a quiet minute with me? You can say no.',
+      consent: ['smug', 'Of course I can say no. I am a queen. ...But my answer is yes.'],
+      decline: ['calm', 'Not now. Even queens need a little quiet to themselves. We can talk later.'],
+      reaction: ['blush', 'A royal nod. A smile. You may consider yourself... rather important to me.'],
+      close: ['smile', 'Stop looking so pleased. ...Actually, do not. It suits you.'],
+    },
+    asuna: {
+      animation: 'salute',
+      request: 'Asuna, would you like a little time together? Practice can wait.',
+      consent: ['happy', 'Yes. I am putting the lesson plans away. This is where I want to be.'],
+      decline: ['calm', 'I would rather rest a little first. I want to be here with you properly, not just push through being tired.'],
+      reaction: ['smug', 'A salute for my favourite teammate. ...I was trying to look composed, but you keep making me smile.'],
+      close: ['blush', 'No challenge to win this time. I am just happy we chose to be here together.'],
+    },
+  };
+
+  global.DATA = { SLOTS, DAYS, STAGES, CAPS, LOCATIONS, ACTIVITIES, ITEMS, FORTUNES, GIRLS, GIRL_ORDER, WEATHER, RAIN_SHELTER, INTERACTIONS, WALK_LINES, SLEEPOVER, FOODS, CITY, PAIRS, HAREM, LIFE, LIFE_FX, COSPLAYS, POSES, VS, YUMEKO_CARDS, CHAT, VARIETY, PRIVATE_FLIRT, ENDGAME, TEASE, NIGHT };
 })(window);

@@ -49,7 +49,7 @@
     cafe: { short: 'Café', name: 'Café Lumière', x: 10, y: 13, w: 7, h: 5, door: 13, style: 'cafe', enter: true },
     mall: { short: 'Shop', name: 'Gift Shop', x: 30, y: 13, w: 8, h: 5, door: 33, style: 'shop', enter: true },
     arcade: { short: 'Arcade', name: 'Star Arcade', x: 40, y: 13, w: 6, h: 5, door: 42, style: 'arcade', enter: true },
-    apartments: { short: 'Apts', name: 'Sakura Apts.', x: 2, y: 23, w: 7, h: 6, door: 5, style: 'apartments', enter: false, msg: 'Sakura Apartments. Nami, Yumeko and Marin live here.' },
+    apartments: { short: 'Apts', name: 'Sakura Apts.', x: 2, y: 23, w: 7, h: 6, door: 5, style: 'apartments', enter: false, msg: 'Sakura Apartments. Nami, Yumeko, Marin and Asuna live here.' },
     onsen: { short: 'Onsen', name: 'Sakura Onsen', x: 49, y: 3, w: 7, h: 6, door: 52, style: 'onsen', enter: true },
     clocktower: { short: 'Clock', name: 'Clock Tower', x: 59, y: 1, w: 5, h: 8, door: 61, style: 'clocktower', enter: true },
     maidcafe: { short: 'Maid Café', name: 'Café Blue Rose', x: 49, y: 13, w: 7, h: 5, door: 52, style: 'maidcafe', enter: true },
@@ -85,7 +85,7 @@
   obj('torii', 22, 8, { w: 4 }); // pillars at 22 and 25
   obj('fountain', 22, 14, { w: 4, h: 3 });
   obj('sign', 16, 22, { interact: 'sign', text: '↑ Café · Home · Academy   → Shrine (north)   ↓ Sakura Park · Beach' });
-  obj('sign', 37, 9, { interact: 'sign', text: 'Shirogane Dojo — "Strength protects what you love."' });
+  obj('sign', 37, 9, { interact: 'sign', text: 'Shirogane Dojo — "Strength protects what you love." Morning fencing lessons with Asuna.' });
   obj('board', 21, 23, { interact: 'jog', label: 'Running course' });
   for (const [x, y] of [[15, 26], [19, 27], [31, 28]]) obj('bench', x, y, { interact: 'bench', label: 'Bench' });
   for (const [x, y] of [[12, 34], [30, 34]]) obj('umbrella', x, y, { interact: 'sunbathe', label: 'Beach umbrella' });

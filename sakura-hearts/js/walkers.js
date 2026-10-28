@@ -5,7 +5,7 @@
   const { Buf } = PX;
   const W = 16, H = 24;
   const SKIN = '#fde3cc', SKIN_D = '#efc3a2';
-  const CLOTH_KEYS = ['top', 'trim', 'bottomC', 'legs', 'shoes', 'sleeves', 'tie', 'sash', 'apron', 'bikini', 'openShirt', 'stripes', 'dots', 'belt', 'accent', 'ribbon', 'nightcap', 'headTowel', 'gownTrim', 'band'];
+  const CLOTH_KEYS = ['top', 'trim', 'bottomC', 'legs', 'shoes', 'sleeves', 'tie', 'sash', 'apron', 'bikini', 'openShirt', 'stripes', 'dots', 'belt', 'accent', 'ribbon', 'nightcap', 'headTowel', 'gownTrim', 'band', 'cross', 'scabbard', 'blade'];
 
   const DEFS = {
     player: {
@@ -44,6 +44,11 @@
       hair: ['#f6da7c', '#fff4c0', '#d8b454'], style: 'long', tips: '#f4a6bc', eye: '#e0507a',
       top: '#fbfaf6', trim: '#ffffff', bottom: 'skirt', bottomC: '#a8cce6', legs: SKIN, shoes: '#7a4a2a', tie: '#5a7088', choker: true,
     },
+    asuna: {
+      hair: ['#bf713e', '#f0b879', '#86472e'], style: 'long', braid: true, eye: '#a46a3e',
+      top: '#f8f7f3', trim: '#c82b3b', bottom: 'skirt', bottomC: '#c82b3b', legs: '#f8f7f3', shoes: '#f8f7f3', bareArms: true, tails: true,
+      cross: '#c82b3b', rapier: true, scabbard: '#285b69', blade: '#dce7ed',
+    },
     frieren: {
       hair: ['#eceef6', '#ffffff', '#b4b8cc'], style: 'bob', twin: 'high', ears: true, eye: '#4aa080',
       top: '#f6f4ee', trim: '#d6aa44', bottom: 'skirt', bottomC: '#f6f4ee', legs: '#24223a', shoes: '#9a6a3a', belt: '#2a2832',
@@ -53,7 +58,7 @@
   // Beach and onsen looks: colors come from the portrait palettes.
   function outfitDef(id, outfit, o = {}) {
     const base = DEFS[id];
-    const plain = { tie: null, trim: null, apron: null, belt: null, sash: null, tails: false, gloves: false, sleeves: null, bareArms: true, legs: SKIN, shoes: SKIN };
+    const plain = { cross: null, rapier: false, tie: null, trim: null, apron: null, belt: null, sash: null, tails: false, gloves: false, sleeves: null, bareArms: true, legs: SKIN, shoes: SKIN };
     if (outfit === 'cosplay') {
       const base2 = Object.assign({}, base, plain);
       switch (o.cos) {
@@ -105,7 +110,7 @@
   }
 
   // dir: 'down' | 'up' | 'left' | 'right'; frame: 0 stand, 1/2 steps
-  function build(id, dir, frame, outfit, o = {}) {
+  function build(id, dir, frame, outfit, o = {}, gesture = null) {
     let d = outfit ? outfitDef(id, outfit, o) : DEFS[id];
     if (!outfit && id === 'player' && o.coat) d = Object.assign({}, d, { top: o.coat });
     if (o.tint && o.tint[SPRITES.lookKey(outfit, o)]) {
@@ -185,14 +190,37 @@
       if (d.style === 'long' && d.loop) { b.rect(6, 14, 4, 1, d.trim); }
     }
 
+    // Asuna's tunic cross and the red cuff of her white stockings.
+    if (d.cross) {
+      if (!up) {
+        b.rect(side ? 6 : 7, 14, 1, 3, d.cross);
+        b.rect(side ? 5 : 6, 15, 3, 1, d.cross);
+      }
+      if (side) { b.set(6 + step, 20, d.cross); b.set(8 - step, 20, d.cross); }
+      else { b.rect(5, 19 - (step > 0 ? 1 : 0), 2, 1, d.cross); b.rect(9, 19 - (step < 0 ? 1 : 0), 2, 1, d.cross); }
+    }
+    // A sheathed rapier at her hip, rather than a weapon held while walking.
+    if (d.rapier) {
+      const x = side ? 11 : 13;
+      b.line(x, 17, x + 1, 21, d.scabbard); b.set(x + 1, 22, d.blade);
+      b.line(x - 1, 15, x, 17, d.blade); b.rect(x - 1, 16, 3, 1, d.blade);
+    }
+
     // arms swing opposite the legs
     const armC = d.openShirt ? d.openShirt : d.bareArms ? SKIN : d.sleeves || d.top;
     const handC = d.gloves ? '#ffffff' : SKIN;
+    const raised = gesture && ['wink', 'proud', 'shy', 'bounce', 'regal', 'salute'].includes(gesture.kind);
+    const handY = gesture && (gesture.kind === 'salute' ? 8 + (gesture.stage === 2 ? 1 : 0)
+      : gesture.kind === 'bounce' ? 9 + (gesture.stage === 2 ? 2 : 0)
+        : gesture.kind === 'shy' ? 12 : 10 + (gesture.stage === 2 ? 1 : 0));
     if (side) {
-      b.rect(7 - step, 14, 2, 3, armC); b.rect(7 - step, 17, 2, 1, handC);
+      if (raised) { b.rect(7, 13, 2, 3, armC); b.rect(6, handY + 1, 2, 13 - handY, armC); }
+      else { b.rect(7 - step, 14, 2, 3, armC); b.rect(7 - step, 17, 2, 1, handC); }
     } else {
-      b.rect(3, 14 + (step < 0 ? 0 : 0), 1, 3, armC); b.rect(12, 14, 1, 3, armC);
-      b.set(3, 17 - (step > 0 ? 1 : 0), handC); b.set(12, 17 - (step < 0 ? 1 : 0), handC);
+      b.rect(3, 14, 1, 3, armC);
+      b.set(3, 17 - (step > 0 ? 1 : 0), handC);
+      if (raised) { b.rect(12, 13, 2, 2, armC); b.rect(13, handY + 1, 1, 12 - handY, armC); }
+      else { b.rect(12, 14, 1, 3, armC); b.set(12, 17 - (step < 0 ? 1 : 0), handC); }
     }
 
     // head: hair cap behind, face, then bangs on top
@@ -230,6 +258,14 @@
     if (!up) { b.set(5, 3, hl); b.set(6, 3, hl); b.set(10, 3, hl); }
     else { b.set(5, 4, hl); b.set(11, 4, hl); }
     b.clip = false;
+
+    // Asuna's small temple braids remain with every change of outfit.
+    if (d.braid) {
+      const x = up ? 3 : side ? 12 : 2;
+      for (let y = 5; y < 13; y += 2) { b.set(x, y, hl); b.set(x + 1, y + 1, hd); }
+      if (!side && !up) for (let y = 5; y < 13; y += 2) { b.set(13, y, hl); b.set(12, y + 1, hd); }
+      b.set(x, 13, '#f8f7f3');
+    }
 
     // accessories on top
     if (d.band && !d.headTowel) b.rect(side ? 5 : 3, 2, side ? 8 : 10, 1, d.band);
@@ -275,6 +311,49 @@
         b.line(12, 6, 11, 11, hd); b.line(9, 6, 10, 9, hl);
       }
     }
+
+    // Small, fully-clothed expressions: a wink, a quiet smile, a wave or
+    // salute. The torso, skirt, legs and outfit details are never moved.
+    if (gesture) {
+      const { kind, stage } = gesture;
+      const lash = '#2a1828', blush = '#e994a0';
+      const eye = (which, closed = true) => {
+        if (up || (!side && d.hideEye === which)) return;
+        const x = side ? 3 : which === 'left' ? 4 : 9;
+        b.rect(x, 8, 3, 3, SKIN);
+        if (closed) { b.rect(x, 9, 3, 1, lash); b.set(x + (side ? 0 : which === 'left' ? 0 : 2), 8, lash); }
+        else { b.rect(x, 9, 3, 1, lash); b.rect(x + 1, 10, 2, 1, d.eye); }
+      };
+      const closeBoth = () => { eye('left'); if (!side) eye('right'); };
+      if (!up) {
+        const mx = side ? 4 : 7;
+        // The different profiles keep their own timing and expression.
+        if (kind === 'wink' && stage === 2) eye(d.hideEye === 'left' ? 'right' : 'left');
+        if (kind === 'proud') { eye('left', false); if (!side && stage === 2) eye('right', false); }
+        if ((kind === 'curtsy' && stage === 1) || (kind === 'calm' && stage === 2) || (kind === 'shy' && stage === 2) || (kind === 'bounce' && stage === 1)) closeBoth();
+        if ((kind === 'curtsy' && stage === 2) || (kind === 'calm' && stage === 1)) { eye('left', false); if (!side) eye('right', false); }
+        if (kind === 'regal') { eye('left', false); if (!side) eye('right', stage === 2); }
+        if (kind === 'salute' && stage === 2) eye(d.hideEye === 'left' ? 'right' : 'left');
+        if (['wink', 'shy', 'calm', 'curtsy'].includes(kind)) {
+          if (side) b.set(3, 11, blush);
+          else {
+            if (d.hideEye !== 'left') b.set(4, 11, blush);
+            if (d.hideEye !== 'right') b.set(11, 11, blush);
+          }
+        }
+        b.rect(mx, 12, side ? 1 : 2, 1, '#b96c7c');
+        if (['bounce', 'wink', 'salute'].includes(kind) && stage === 2) b.set(mx, 11, '#b96c7c');
+      }
+      // The original lowered arm is replaced above, so this is one moving
+      // hand rather than an extra hand pasted over the standing sprite.
+      if (raised) {
+        const hx = side ? 5 : 13;
+        b.rect(hx, handY, 2, 2, handC);
+        if (kind === 'salute') b.rect(side ? 4 : 12, handY, 2, 1, handC);
+        else if (kind === 'proud') b.set(hx + 1, handY - 1, handC);
+        else if (stage === 1 && ['wink', 'bounce', 'regal'].includes(kind)) b.set(hx + 1, handY - 1, handC);
+      }
+    }
     b.outline(0.55);
     if (flip) {
       const out = new Buf(W, H);
@@ -292,5 +371,17 @@
     return cache.get(k);
   }
 
-  global.WALKERS = { get, W, H, DEFS };
+  const FLIRT_POSES = ['wink', 'proud', 'curtsy', 'shy', 'bounce', 'calm', 'regal', 'salute'];
+  // phase is normalized over a cutscene (0..1). Quantizing it keeps the
+  // sprite cache bounded while giving each gesture a rest and two poses.
+  function flirt(id, dir = 'down', frame = 0, kind = 'wink', phase = 0, outfit = null, o = null) {
+    const p = Math.max(0, Math.min(1, Number(phase) || 0));
+    const stage = p < 0.2 || p >= 0.95 ? 0 : p < 0.6 ? 1 : 2;
+    if (!stage || !FLIRT_POSES.includes(kind)) return get(id, dir, frame, outfit, o);
+    const k = 'flirt:' + id + ':' + dir + ':' + frame + ':' + kind + ':' + stage + ':' + (outfit || '') + ':' + JSON.stringify(o || {});
+    if (!cache.has(k)) cache.set(k, build(id, dir, frame, outfit, o || {}, { kind, stage }).toCanvas(1));
+    return cache.get(k);
+  }
+
+  global.WALKERS = { get, flirt, FLIRT_POSES, W, H, DEFS };
 })(window);

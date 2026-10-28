@@ -122,6 +122,7 @@
     dojo: {
       name: 'Shirogane Dojo', w: 12, h: 9, door: 6, floor: 'dojo', wall: ['#e8d4a8', '#d8c090'],
       spawn: [6, 7],
+      stations: { asuna: [8, 5] },
       wallDecor: [{ type: 'shoji', x: 2 }, { type: 'scroll', x: 6, act: 'scroll', label: 'Hanging scroll' }, { type: 'shoji', x: 9 }],
       props: [
         { type: 'tatami', x: 3, y: 3, w: 6, h: 4, walk: true },
@@ -1121,6 +1122,7 @@
     ],
   });
   const BEDROOMS = {
+    asuna: girlRoom("Asuna's Room", { floor: 'lightwood', wall: ['#fff0e2', '#f2dece'], blanket: '#bc3347', rug: '#f6ece0', cab: '#f4e6d6', lamp: '#ffd09a', decor: [{ type: 'window', x: 4 }, { type: 'painting', x: 6 }], props: [{ type: 'rack', x: 5, y: 2, w: 2, h: 1 }, { type: 'table', x: 6, y: 7, w: 1, h: 1 }, { type: 'plant', x: 7, y: 8, w: 1, h: 1 }] }),
     nami: girlRoom("Nami's Room", { floor: 'wood', wall: ['#ffe4c4', '#f6d4ac'], blanket: '#f2913d', rug: '#5aa8f0', cab: '#5aa8f0', decor: [{ type: 'map', x: 4 }, { type: 'window', x: 6 }], props: [{ type: 'desk', x: 5, y: 2, w: 2, h: 1 }, { type: 'plant', x: 7, y: 2, w: 1, h: 1 }, { type: 'boxes', x: 7, y: 8, w: 1, h: 1 }] }),
     aqua: girlRoom("Aqua's Room", { floor: 'lightwood', wall: ['#e4f2ff', '#d0e6f8'], blanket: '#3b78e0', rug: '#8fd3f7', cab: '#8fd3f7', decor: [{ type: 'shoji', x: 4 }, { type: 'scroll', x: 7 }], props: [{ type: 'tatami', x: 4, y: 7, w: 3, h: 2, walk: true }, { type: 'drum', x: 6, y: 2, w: 1, h: 1 }, { type: 'plant', x: 7, y: 8, w: 1, h: 1 }] }),
     yumeko: girlRoom("Yumeko's Room", { floor: 'planks', wall: ['#6a2a36', '#5a222c'], blanket: '#c8303a', rug: '#2a2232', cab: '#2a2232', lamp: '#ffb0a0', decor: [{ type: 'window', x: 4 }, { type: 'poster', x: 6 }], props: [{ type: 'table', x: 6, y: 3, w: 1, h: 1 }, { type: 'cabinet', x: 5, y: 2, w: 1, h: 1, color: '#c8303a' }, { type: 'plant', x: 7, y: 8, w: 1, h: 1 }] }),
